@@ -26,7 +26,7 @@
                  ipseudo
       Real(8) :: w(ns), bval(ns*kch), aa(ns,ns), cc(ns,ns), vc(ns,ks), &
                  ad(ns,ns,kch), cd(ns,ns,kch), zero=0.d0, one=1.d0,    &
-                 S,SS, E_ch !, w2(ns,ns)
+                 S,SS, E_ch
       Real(8), external :: BVMV
 
       Character(1) :: uplo = 'L', job = 'V', trans = 'T'
@@ -85,7 +85,7 @@
        nsol=i2-i1+1 
        aa(1:nsol,1:nsol) = ad(i1:i2,i1:i2,ich)
        cc(1:nsol,1:nsol) = cd(i1:i2,i1:i2,ich)
-       Call LAP_DSYGV ('V','U',nsol,aa,ns,cc,ns,w,info) 
+       Call LAP_DSYGV ('V','U',nsol,ns,aa,cc,w,info) 
        if(info.ne.0) then
         write(pri,*) 'channel diagonalization failed, channel = ',ich, lch(ich)
         Stop 'BSR_HD: channel diagonalization failed'
@@ -158,22 +158,15 @@ if(iedel.gt.0) Edmax = Edel(it)
         read(nui) cc(1:ns,1:ns)
         i1=ipsol(ic-1)+1; i2=ipsol(ic)
         j1=ipsol(jc-1)+1; j2=ipsol(jc)
-!       Do i=i1,i2
-!        Do j=1,ns; w(j)=SUM(bb(:,i)*cc(:,j)); End do 
-!        Do j=j1,j2; c(i,j)=SUM(w(:)*bb(:,j)); End do 
-!       End do       
-        Call LAP_DGEMM('T','N', ns, i2-i1+1, ns, 1.0d0, cc, ns, &
-                bb(1,i1), ns, 0.0d0, aa, ns)
-        Call LAP_DGEMM('T','N', i2-i1+1, j2-j1+1, ns, 1.0d0, aa, ns, &
-                bb(1,j1), ns, 0.0d0, c(i1,j1), khm)
+        Do i=i1,i2
+         Do j=1,ns; w(j)=SUM(bb(:,i)*cc(:,j)); End do 
+         Do j=j1,j2; c(i,j)=SUM(w(:)*bb(:,j)); End do 
+        End do       
 
         S = zero 
-!       Do i=i1,i2;  Do j=j1,j2
-!        SS=abs(c(i,j)); if(SS.gt.S) S=SS
-!       End do; End do 
-        do concurrent (j=j1:j2, i=i1:i2)
-          SS=abs(c(i,j)); if(SS.gt.S) S=SS
-        End do
+        Do i=i1,i2;  Do j=j1,j2
+         SS=abs(c(i,j)); if(SS.gt.S) S=SS
+        End do; End do 
         if(S.gt.eps_o) & 
          write(pri,'(a,f6.3,3x,2(a,a,i5,a,i4,3x))') &
          'Warning: channel-channel overlap =',S, &
@@ -202,40 +195,24 @@ if(iedel.gt.0) Edmax = Edel(it)
 
        if(ic.gt.kch.and.jc.gt.kch) then  !  pert-pert
 
-         read(nui) S
-         a(ic-idel,jc-idel) = S 
+        read(nui) S
+        a(ic-idel,jc-idel) = S 
 
        elseif(ic.gt.kch) then            !  ch-pert
 
-         read(nui) w(1:ns)
-         j1=ipsol(jc-1)+1; j2=ipsol(jc); i=ic-idel
-         Do j=j1,j2
-           a(i,j)=SUM(w(:)*bb(:,j))
-         End do 
+        read(nui) w(1:ns)
+        j1=ipsol(jc-1)+1; j2=ipsol(jc); i=ic-idel
+        Do j=j1,j2; a(i,j)=SUM(w(:)*bb(:,j));  End do 
 
        else                              !  ch-ch
 
         read(nui) cc(1:ns,1:ns)
-        i1=ipsol(ic-1)+1
-        i2=ipsol(ic)
-        j1=ipsol(jc-1)+1
-        j2=ipsol(jc)
-!       print *,"BDL xform alp",i1,i2,ns,j1,j2; call cpu_time(t3)
-        ! ns is 152, bb 1st dim is ns, aa and cc are (ns,ns)
-!       Do j=i1,i2  ! 8317,8460
-!         Do i=1,ns
-!           w2(i,j-i1+1)=SUM(cc(:,i)*bb(:,j))
-!         End do 
-!       End do       
-        Call LAP_DGEMM('T','N', ns, i2-i1+1, ns, 1.0d0, cc, ns, &
-                bb(1,i1), ns, 0.0d0, aa, ns)
-!       Do j=j1,j2
-!         Do i=i1,i2  ! 8317,8460
-!           a(i,j)=SUM(w2(:,i-i1+1)*bb(:,j))
-!         End do 
-!       End do       
-        Call LAP_DGEMM('T','N', i2-i1+1, j2-j1+1, ns, 1.0d0, aa, ns, &
-                bb(1,j1), ns, 0.0d0, a(i1,j1), khm)
+        i1=ipsol(ic-1)+1; i2=ipsol(ic)
+        j1=ipsol(jc-1)+1; j2=ipsol(jc)
+        Do i=i1,i2
+         Do j=1,ns; w(j)=SUM(bb(:,i)*cc(:,j)); End do 
+         Do j=j1,j2; a(i,j)=SUM(w(:)*bb(:,j)); End do 
+        End do       
 
        end if
 
@@ -304,7 +281,7 @@ if(iedel.gt.0) Edmax = Edel(it)
 
       ibtype = 1 !  we consider only  A x = labda B x problem
 
-      CALL LAP_DSYGST( ibtype, uplo, khm, A, khm, C, khm, INFO )
+      CALL DSYGST( ibtype, uplo, khm, A, khm, C, khm, INFO )
 
       end if  ! over diag_ovl
 
@@ -354,10 +331,12 @@ if(iedel.gt.0) Edmax = Edel(it)
       n = khm
       neig = khm
 
-      CALL LAP_DTRSM('Left', UPLO, TRANS, 'Non-unit', N, NEIG, ONE, C, khm, A, khm )
+      CALL DTRSM('Left', UPLO, TRANS, 'Non-unit', N, NEIG, ONE, C, khm, A, khm )
 
       end if ! over diag_ovl
 
       if(allocated(c)) Deallocate(c)
 
       End Subroutine Diag_hd
+
+
