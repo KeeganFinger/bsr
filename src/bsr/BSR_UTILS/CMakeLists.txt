@@ -73,8 +73,8 @@ add_executable(sum_hh_jj sum_hh_jj.f90)
 target_link_libraries(sum_hh_jj zcom)
 
 # Make top-up executable case
-add_executable(sec_top_TM sec_top_TM.f90)
-target_link_libraries(sec_top_TM zconfls zcom)
+#add_executable(sec_top_TM sec_top_TM.f90)
+#target_link_libraries(sec_top_TM zconfls zcom)
 
 # Make top-up executable case no "TM"
 add_executable(sec_top sec_top.f90)
