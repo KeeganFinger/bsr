@@ -459,16 +459,17 @@
       PARAMETER          ( ONE = 1.0D0, HALF = 0.5D0 )
 !     ..
 !     .. Local Scalars ..
-      LOGICAL            UPPER
+      LOGICAL            UPPER, LOWER
       INTEGER            K, KB, NB
 
 !@CUF ISTAT = cudaMemAdvise(B, LDB*N, cudaMemAdviseSetReadMostly, 0)
 
       INFO = 0
       UPPER = LSAME( UPLO, 'U' )
+      LOWER = LSAME( UPLO, 'L' )
       IF( ITYPE.LT.1 .OR. ITYPE.GT.3 ) THEN
          INFO = -1
-      ELSE IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+      ELSE IF( .NOT. UPPER .AND. .NOT. LOWER ) THEN
          INFO = -2
       ELSE IF( N.LT.0 ) THEN
          INFO = -3

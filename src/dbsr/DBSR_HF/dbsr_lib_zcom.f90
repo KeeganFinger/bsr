@@ -2495,7 +2495,7 @@
       Real(8) :: rvalue
       Integer :: iarg,i,i1,i2,iname
       Character(80) :: AS
-!      Integer, internal :: IARGC
+      Integer :: IARGC
 
       iarg = IARGC(); if(iarg.eq.0) Return
       iname=LEN_TRIM(name)
@@ -2519,7 +2519,7 @@
       Integer :: ivalue
       Integer :: iarg,i,i1,i2,iname
       Character(80) :: AS
-!      Integer, internal :: IARGC
+      Integer :: IARGC
 
       iarg = IARGC(); if(iarg.eq.0) Return
       iname=LEN_TRIM(name)
@@ -2541,7 +2541,7 @@
       Character(*) :: name, avalue
       Integer :: iarg,i,i1,i2,iname
       Character(80) :: AS
-!      Integer, internal :: IARGC
+      Integer :: IARGC
 
       iarg = IARGC(); if(iarg.eq.0) Return
       iname=LEN_TRIM(name)
@@ -2565,7 +2565,7 @@
       Integer :: na,iarr(na)
       Integer :: iarg,ia,iname,i,i1,i2,j,j1,j2,k,k1,k2
       Character(180) :: AS
-!      Integer, internal :: IARGC
+      Integer :: IARGC
 
       iarg = IARGC(); if(iarg.eq.0) Return
       iname=LEN_TRIM(name)
@@ -2610,7 +2610,7 @@
       Character(*) :: name
       Integer :: iarg,i,i1,i2,iname
       Character(80) :: AS
-!      Integer, internal :: IARGC
+      Integer :: IARGC
 
       iarg = IARGC(); if(iarg.eq.0) Return
       Do i=1,iarg
