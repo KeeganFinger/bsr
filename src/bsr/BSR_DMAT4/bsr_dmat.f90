@@ -116,7 +116,7 @@
       Real(8) :: t1,t2,AWT
       Integer :: i,j,n,l,k
       Real(8), external :: RRTC,DJ_fact,DJM_fact
-      Integer, external :: Jfind_bsorb, IBORT
+      Integer, external :: Jfind_bsorb
 
       t1 = RRTC()
 

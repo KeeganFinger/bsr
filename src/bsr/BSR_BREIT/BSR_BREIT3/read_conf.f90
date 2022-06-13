@@ -7,7 +7,7 @@
 !
 !     nub, nui - file units for old and new results, respectively
 !----------------------------------------------------------------------
-      Use bsr_breit,       only: nuc,nub,pri,new,icalc,ioper,joper  
+      Use bsr_breit,       only: nuc,nub,pri,new,icalc,ioper,joper
       Use symc_list_LS
       Use symt_list_LS
       Use conf_LS

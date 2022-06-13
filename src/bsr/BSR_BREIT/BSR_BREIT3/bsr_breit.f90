@@ -52,7 +52,7 @@
 !                   
 !---------------------------------------------------------------------     
       Use bsr_breit
-      Use conf_LS,      only: ne
+      Use conf_LS,      only: ne,joper,ioper
       Use det_list,     only: ndet,ldet
       Use def_list,     only: ndef,ldef
 
