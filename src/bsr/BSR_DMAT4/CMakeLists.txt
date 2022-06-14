@@ -1,4 +1,4 @@
-message(WARNING "bsr_dmat4 does not build correctly")
+#message(WARNING "bsr_dmat4 does not build correctly")
 add_executable(bsr_dmat4
    mod_param.f90
    mod_cmdata.f90

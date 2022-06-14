@@ -9,6 +9,7 @@
 
       Integer :: norb = 0
 
+
 ! ... pointer to orbitals in l-order, (1:norb) arrays:
 
       Integer, allocatable :: lorb(:)   ! list of l-values for all orbitals 
@@ -244,4 +245,3 @@
       End do
 
       End Subroutine Check_orb_overlaps 
-

@@ -10,7 +10,6 @@
       Integer, intent(in) :: kl,nl
       Real(8) :: v(ns), S
       Integer :: i,j, i1,i2, ich
-      Real(8), external :: OBS
       Integer, external :: IBORT   
 
       if(IBORT(kl,nl).eq.0) then

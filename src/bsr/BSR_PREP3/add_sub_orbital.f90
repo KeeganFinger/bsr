@@ -7,6 +7,7 @@
 
       m=nbf+1; if(m.ge.mbf) CALL Allocate_bsorb(mbf+jbf)
 
+
       nbs(m)=nbs(ii); lbs(m)=lbs(ii); kbs(m)=kbs(ii); ebs(m)=ebs(ii)
       mbs(m)=mbs(ii); p(:,m) = p(:,ii)
 

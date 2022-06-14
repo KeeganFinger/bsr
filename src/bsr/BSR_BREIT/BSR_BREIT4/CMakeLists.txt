@@ -1,4 +1,4 @@
-message(WARNING "bsr_breit4 does not build correctly")
+#message(WARNING "bsr_breit4 does not build correctly")
 add_executable(bsr_breit4
    MOD_bsr_breit.f90                                              
    BSR_BREIT.f90            breit_me.f90             add_res.f90              

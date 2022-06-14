@@ -6,13 +6,14 @@
       Use bsr_pol
       Use channel,         only: nch,ncp,ipar,lpar,ispar,ELC,ipch,lch
       Use spline_param,    only: ns,ks
-      Use spline_orbitals, only: nbf,qbs,ebs,IBORT,lbs
+      Use spline_orbitals, only: nbf,qbs,ebs,lbs
 
       Implicit none
       Integer :: iprm(mhm),ipiv(mhm)
       Integer :: i,j,m,k,l,info,ii,jj,ich
       Real(8) :: sol(mhm), aa(mhm), cc(mhm)
       Real(8) :: S,EP, alfa,fvalue,dmat
+      Integer, allocatable :: IBORT(:,:)
 
 ! ... save matrixes:
 

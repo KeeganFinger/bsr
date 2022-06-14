@@ -15,12 +15,12 @@ set(BSR_CONF_COMMON_SOURCES
 
 #MESSAGE(WARNING "bsr_conf3: check_cfg.f90 does not compile with libs_04")
 
-add_executable(bsr_conf3
+add_executable(bsr_conf
   ${BSR_CONF_COMMON_SOURCES}
   bsr_conf.f90)
-target_link_libraries(bsr_conf3 zconfls zcom shells)
+target_link_libraries(bsr_conf zconfls zcom shells)
 
-message(WARNING "bsr_conf3_mpi does not build correctly")
+#message(WARNING "bsr_conf3_mpi does not build correctly")
 # add_executable(bsr_conf3_mpi
 #   ${BSR_CONF_COMMON_SOURCES}
 #   bsr_conf_mpi.f90

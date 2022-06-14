@@ -1,6 +1,6 @@
 add_library(bs                                                                                           
   spline_param.f90         spline_atomic.f90        spline_grid.f90                                      
-  spline_galerkin.f90      spline_orbitals_old.f90      spline_densities.f90                                 
+  spline_galerkin.f90      spline_orbitals.f90      spline_densities.f90                                 
   spline_integrals.f90     spline_moments.f90       spline_hl.f90                                        
   spline_rk_integrals.f90  spline_slater.f90        azl.f90                                              
   bav.f90                  bcore.f90                bhl.f90                                              

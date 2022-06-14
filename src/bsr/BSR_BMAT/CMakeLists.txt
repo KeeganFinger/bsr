@@ -13,7 +13,7 @@ set(BSR_BMAT4_COMMON_SOURCES
   read_data.f90
   open_br.f90)
 
-message(WARNING "bsr_bmat4 does not build correctly")
+#message(WARNING "bsr_bmat4 does not build correctly")
 add_executable(bsr_bmat4
   ${BSR_BMAT4_COMMON_SOURCES}
   bsr_bmat.f90

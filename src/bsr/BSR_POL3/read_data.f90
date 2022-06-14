@@ -14,6 +14,7 @@
       Implicit none
       Integer :: i,j, nc,lc,kc, ich
       Integer, external :: Ifind_nlk
+      Integer, allocatable :: IBORT(:,:)
 
 ! ... set up B-splines:
  

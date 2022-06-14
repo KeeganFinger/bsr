@@ -28,6 +28,7 @@
 ! ... convolution with B-overlaps: 
 
       Real(8), allocatable :: QBS(:,:) 
+      Real(8), allocatable :: OBS(:,:)
 
 ! ... memory requirements (in 4b words):
 
@@ -65,19 +66,20 @@
       if(m.le.0) then
       
        if(Allocated(NBS)) &
-         Deallocate (NBS,LBS,KBS,MBS,iech,EBS,PBS,QBS)
+         Deallocate (NBS,LBS,KBS,MBS,iech,EBS,PBS,QBS,OBS)
          nbf = 0;  mbf = 0
       
       elseif(m.gt.mbf.and.nbf.eq.0) then
 
        if(Allocated(nbs)) & 
-          Deallocate (nbs,lbs,kbs,mbs,iech,ebs,PBS,QBS)
+          Deallocate (nbs,lbs,kbs,mbs,iech,ebs,PBS,QBS,OBS)
        
        mbf = m
        Allocate(nbs(mbf),lbs(mbf),kbs(mbf),ebs(mbf),mbs(1:mbf), &
-                iech(1:mbf),PBS(1:ns,1:mbf), QBS(1:ns,1:mbf))
+                iech(1:mbf),PBS(1:ns,1:mbf), QBS(1:ns,1:mbf), &
+                OBS(1:mbf,1:mbf))
        nbs = 0; lbs = 0; kbs = 0; ebs = '****'; mbs = 0; iech = 0
-       PBS = 0.d0; QBS = 0.d0
+       PBS = 0.d0; QBS = 0.d0; OBS = 0.d0
 
       elseif(nbf.gt.0.and.m.gt.mbf) then
 
