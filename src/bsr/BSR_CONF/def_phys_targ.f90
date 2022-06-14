@@ -139,7 +139,7 @@
       write(pri,'(/a,T33,i8)') &
        'number of phys. target config.s:',ncfg_phys
 
-      Call Test_a
+      !Call Test_a
 
       End Subroutine Def_phys_targ
 

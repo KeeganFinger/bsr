@@ -14,7 +14,7 @@
       Implicit none
       Integer, intent(in) :: in1,in2,nub
       Integer :: nsymc_bnk, nsymt_bnk,  it,jt, i,k
-      Integer(8) :: ij_done
+!      Integer(8) :: ij_done
       Integer(8), external :: DEF_ij8
 
 ! ... initialize arrays:

@@ -13,6 +13,8 @@ set(BSR_CONF_COMMON_SOURCES
   read_arg.f90
   bsr_conf_inf.f90)
 
+#MESSAGE(WARNING "bsr_conf3: check_cfg.f90 does not compile with libs_04")
+
 add_executable(bsr_conf3
   ${BSR_CONF_COMMON_SOURCES}
   bsr_conf.f90)

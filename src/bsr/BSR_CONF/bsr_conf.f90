@@ -156,7 +156,7 @@
        Call Add_conf_LS(nuc,0)
        Close(nuc)
       End do    
-      Call Test_a
+      !Call Test_a
 
       write(pri,'(/a,T33,i8/)') &
        'number of target configurations:',ncfg-ncfg_phys

@@ -265,7 +265,7 @@
 
 ! ... evaluate the symmetry of the K-matrix:
  
-       Call Sym_mat1 (nopen,nch,KMAT,dmn,dmx,dav)
+       Call Sym_mat (nopen,nch,KMAT,dmn,dmx,dav)
  
        if(ibug.gt.0) write(pri,'(/a,3f7.1/)') &
           ' asymmetry, LOG(Min/Max/Av): ',dmn,dmx,dav

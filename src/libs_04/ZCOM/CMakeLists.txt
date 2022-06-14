@@ -28,7 +28,7 @@ set(ZCOM_SOURCES
   sl_scale.f90             sorting_routines.f90     spectroscopic.f90
   splin3.f90               xlagr.f90                zis.f90
   xAy.f90                  det_fact.f90             stop_mp.f90
-  check_det_new.f90)
+  check_det_new.f90	   index_tr.f90)
 
 # Gfortran no longer provides an implementation of iargc, so this
 # simple routine is added when Gfortran is the compiler used.
