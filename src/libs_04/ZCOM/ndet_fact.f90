@@ -1,5 +1,5 @@
 !======================================================================
-      Subroutine Ndet_fact(idf,IPN1,IPN2)
+      Subroutine Ndet_fact(idf,IPN1,IPN2,ipbs)
 !======================================================================
 !     Analize the determinant overlap factor. 
 !     First each overlap determinant is expended into one-electron
@@ -13,7 +13,7 @@
       Use Ndef_list;     Use new_defs 
       
       Implicit none
-      Integer, intent(in) :: idf, IPN1(*),IPN2(*)
+      Integer, intent(in) :: idf, IPN1(*),IPN2(*),ipbs(*)
       Integer, parameter :: jmdef = 100
       Real(8) :: DF(jmdef)
       Integer :: NP(jmdef),NP1(jmdef),NP2(jmdef),IDPNT(jmdef)
@@ -38,7 +38,7 @@
        Do i=1,kn
         k=NPD(i+ip); NP1(i)=IPN1(k/ibd); NP2(i)=IPN2(mod(k,ibd))
        End do
-       Call Check_det(kn,NP1,NP2,iext)
+       Call Check_det_new(kn,NP1,NP2,iext,ipbs)
        IDPNT(j)=nndet
        if(j.gt.1) then; if(IDPNT(j).eq.IDPNT(j-1)) nndet=0; end if
        if(nndet.eq.0) Return   ! exit if overlap = 0 

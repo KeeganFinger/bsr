@@ -31,6 +31,7 @@
 !    if (ierr /= 0 ) STOP 'facsb: dpbfa (LINPACK) failed'
 
     Call DPBTRF('U',ns,ks-1,bs,ks,ierr)
+!    Call DPOTRF('U',ns,bs,ns,ierr)
     if (ierr.ne.0)  Stop 'facsb: dpbtrf (LAPACK) failed'
 
   END SUBROUTINE facsb

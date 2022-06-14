@@ -31,4 +31,4 @@ add_library(bs
   wk.f90                   wky.f90                  wk_moments.f90                                       
   ykf.f90                  yval.f90                 zeta_y.f90                                           
   zinty.f90                memory_splines.f90	    pri_int.f90
-  read_bsw.f90)
+  read_bsw.f90 		   full_mat_sym.f90)

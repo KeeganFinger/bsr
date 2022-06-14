@@ -14,12 +14,12 @@ set(BSR_BMAT4_COMMON_SOURCES
   open_br.f90)
 
 message(WARNING "bsr_bmat4 does not build correctly")
-# add_executable(bsr_bmat4
-#   ${BSR_BMAT4_COMMON_SOURCES}
-#   bsr_bmat.f90
-#   add_res.f90
-#   conf_loop.f90)
-# target_link_libraries(bsr_bmat4 zconfls shells zcom bs)
+add_executable(bsr_bmat4
+  ${BSR_BMAT4_COMMON_SOURCES}
+  bsr_bmat.f90
+  add_res.f90
+  conf_loop.f90)
+target_link_libraries(bsr_bmat4 zconfls shells zcom bs ${BLAS_LAPACK_LIBRARIES})
 
 if(MPI_Fortran_FOUND)
   message(WARNING "bsr_bmat4_mpi does not build correctly")
