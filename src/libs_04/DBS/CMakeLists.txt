@@ -1,6 +1,6 @@
 add_library(dbs
   DBS_nuclear.f90          DBS_grid.f90             DBS_gauss.f90
-  DBS_orbitals_pq.f90      MOD_bk4.f90
+  DBS_orbitals_pq_old.f90      MOD_bk4.f90
   DBS_moments.f90          DBS_integrals.f90        DBS_core.f90   DBS_core_energy.f90
   DBS_dhl.f90              DBS_dhl_core.f90         DBS_debug.f90
   bdcwf.f90                bvalue2.f90              bav.f90
