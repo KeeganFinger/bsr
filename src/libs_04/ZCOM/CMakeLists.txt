@@ -20,7 +20,7 @@ set(ZCOM_SOURCES
   FUN_zcoulfg90.f90	   FUN_zcoulwf.f90	    ndet_fact.f90
   gauss_points.f90         get_ij.f90               interv.f90
   inv.f90                  ipointer.f90	   	    
-  LAPACK_calls_hack.f90    num.f90                  read_arg.f90
+  LAPACK_calls_hack.F90    num.f90                  read_arg.f90
   read_par.f90             recup_a.f90              rrtc.f90
   SCT_coul_phase.f90       SCT_epahse.f90           SCT_fano_tma.f90
   SCT_iopen.f90            SCT_kma_om.f90           SCT_kma_tma.f90

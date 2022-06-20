@@ -89,7 +89,7 @@
        nsol=i2-i1+1 
        aa(1:nsol,1:nsol) = ad(i1:i2,i1:i2,ich)
        cc(1:nsol,1:nsol) = cd(i1:i2,i1:i2,ich)
-       Call LAP_DSYGV ('V','U',nsol,ns,aa,cc,w,info) 
+       Call LAP_DSYGV ('V','U',nsol,aa,ns,cc,ns,w,info) 
        if(info.ne.0) then
         write(pri,*) 'channel diagonalization failed, channel = ',ich
         Stop 'BSR_HD: channel diagonalization failed'
