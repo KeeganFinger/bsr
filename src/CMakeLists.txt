@@ -25,8 +25,6 @@ endif()
 
 GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
-MESSAGE(${CMAKE_Fortran_COMPILER_ID})
-
 if (${CMAKE_Fortran_COMPILER_ID} MATCHES "GNU")
   MESSAGE(STATUS "Compiling using gfortran")
   SET(CMAKE_Fortran_FLAGS_RELEASE "-cpp -funroll-all-loops -fno-automatic -fcray-pointer -fno-f2c -O2 -fallow-argument-mismatch")
@@ -35,16 +33,11 @@ elseif (${CMAKE_Fortran_COMPILER_ID} MATCHES "PGI")
   MESSAGE(STATUS "Compiling using pgfortran")
   SET(CMAKE_Fortran_FLAGS_RELEASE "-Mpreprocess -Munroll -Msave -Mcray=pointer -O2")
   SET(CMAKE_Fortran_FLAGS_DEBUG "-Mpreprocess -O0 -g")
-
 elseif (${CMAKE_Fortran_COMPILER_ID} MATCHES "Intel")
   MESSAGE(STATUS "Compiling using ifort")
   SET(CMAKE_Fortran_FLAGS_RELEASE "-fpp -unroll-aggressive -save -safe-cray-ptr -O2 -falias")
   SET(CMAKE_Fortran_FLAGS_DEBUG "-fpp -O0 -g")
 endif() 
-
-#SET(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -lblas -llapack")
-#SET(CMAKE_Fortran_FLAGS_DEBUG "${CMAKE_Fortran_FLAGS_DEBUG} -lblas -llapack")
-
 
 FIND_PACKAGE(BLAS REQUIRED)
 FIND_PACKAGE(LAPACK REQUIRED)
