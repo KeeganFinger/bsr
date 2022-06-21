@@ -1,6 +1,7 @@
 set(BSR_BMAT4_COMMON_SOURCES
   MOD_bsr_breit.f90
   MOD_bsr_mat.f90
+  alloc_orb_overlaps.f90
   breit_me.f90
   prepare_det_expn.f90
   read_arg.f90
@@ -22,17 +23,17 @@ add_executable(bsr_bmat4
 target_link_libraries(bsr_bmat4 zconfls shells zcom bs ${BLAS_LAPACK_LIBRARIES})
 
 if(MPI_Fortran_FOUND)
-  message(WARNING "bsr_bmat4_mpi does not build correctly")
-  # add_executable(bsr_bmat4_mpi
-  #   ${BSR_BMAT4_COMMON_SOURCES}
-  #   br_arg.f90
-  #   bsr_bmat_mpi.f90
-  #   add_res_mpi.f90
-  #   conf_loop_mpi.f90
-  #   get_res_mpi.f90
-  #   send_res_mpi.f90
-  #   conf_calc.f90
-  #   get_det_exp.f90
-  #   send_det_exp.f90)
-  # target_link_libraries(bsr_bmat4_mpi zconfls shells zcom bs MPI::MPI_Fortran)
+  # message(WARNING "bsr_bmat4_mpi does not build correctly")
+   add_executable(bsr_bmat4_mpi
+     ${BSR_BMAT4_COMMON_SOURCES}
+     br_arg.f90
+     bsr_bmat_mpi.f90
+     add_res_mpi.f90
+     conf_loop_mpi.f90
+     get_res_mpi.f90
+     send_res_mpi.f90
+     conf_calc.f90
+     get_det_exp.f90
+     send_det_exp.f90)
+   target_link_libraries(bsr_bmat4_mpi zconfls shells zcom bs MPI::MPI_Fortran)
 endif()

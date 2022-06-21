@@ -21,8 +21,10 @@ add_executable(bsr_conf
 target_link_libraries(bsr_conf zconfls zcom shells)
 
 #message(WARNING "bsr_conf3_mpi does not build correctly")
-# add_executable(bsr_conf3_mpi
-#   ${BSR_CONF_COMMON_SOURCES}
-#   bsr_conf_mpi.f90
-#   br_arg.f90)
-# target_link_libraries(bsr_conf3_mpi zconfls zcom shells MPI::MPI_Fortran)
+if(MPI_Fortran_FOUND)
+ add_executable(bsr_conf3_mpi
+   ${BSR_CONF_COMMON_SOURCES}
+   bsr_conf_mpi.f90
+   br_arg.f90)
+ target_link_libraries(bsr_conf3_mpi zconfls zcom shells MPI::MPI_Fortran)
+endif()
