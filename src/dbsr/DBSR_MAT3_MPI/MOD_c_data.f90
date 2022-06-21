@@ -27,7 +27,7 @@
       Integer :: mb    =   2000         ! size of blocks
       Integer :: kb    =    100         ! max.nb for given case
 
-      Integer :: ntype =  4             ! number of integral types
+      Integer :: ntype =  9             ! number of integral types
       Integer :: kpol1 =  0             ! min multipole index                   
       Integer :: kpol2 =  7             ! max multipole index                   
 
@@ -58,7 +58,7 @@
 
 
 !======================================================================
-      Subroutine alloc_c_data(nt,kp1,kp2,mblock,nblock,kblock,eps_c)
+      Subroutine alloc_c_data(nt,kp1,kp2,mblock,nblock,kblock,eps_c,m)
 !======================================================================
 !     allocate (deallocate) arrays in module c_data 
 !----------------------------------------------------------------------
@@ -67,7 +67,7 @@
       Implicit none
       Integer, intent(in) :: nt,kp1,kp2,mblock,nblock,kblock
       Real(8), intent(in) :: eps_c
-      Integer :: m,i,j,k
+      Integer :: m
 
       if(allocated(CDATA)) Deallocate(CDATA,K1,K2,K3,K4,IPT, &
                            ipblk,jpblk,ipi,ipj,iblk,nblk,kblk)
@@ -77,8 +77,8 @@
 
       ntype = nt;   kpol1 = kp1;  kpol2 = kp2
       mb = mblock;  nb = nblock;  kb = kblock
-      i = ntype*(kpol2-kpol1+1)*2 + 1
-      if(nb.lt.i) nb=i
+      m = ntype*(kpol2-kpol1+1)*2 + 1
+      if(nb.lt.m) nb=m
 
       eps_cdata = eps_c
 
@@ -90,6 +90,19 @@
 
       m = 7*m + 4*nb + (kpol2-kpol1+1)*(2+nb)*ntype
       mem_cdata = m * 4.0 / (1024 * 1024) 
+
+      End Subroutine alloc_c_data
+
+
+!======================================================================
+      Subroutine Initilize_c_data
+!======================================================================
+!     clear the arrays from previous calculations
+!----------------------------------------------------------------------
+      Use c_data
+
+      Implicit none
+      Integer :: i,j,k
 
 ! ... initilize all blocks:
 
@@ -107,7 +120,7 @@
        End do
       End do
 
-      End Subroutine alloc_c_data
+      End Subroutine Initilize_c_data
 
 
 !======================================================================
@@ -154,7 +167,6 @@
        if(nblk(k,i).le.n) Cycle
        jtype = i; jpol = k; n = nblk(jpol,jtype)
       End do; End do
-write(*,*) 'Add_matrix: jtype, jpol = ', jtype, jpol
       Call Add_matrix(jtype,jpol)
       if(jtype.eq.itype.and.jpol.eq.kpol) Return
 
@@ -176,7 +188,7 @@ write(*,*) 'Add_matrix: jtype, jpol = ', jtype, jpol
 !======================================================================
       Subroutine Add_cdata(ip,jp,C,j1,j2,j3,j4)
 !======================================================================
-!     add new data to the sub-list (ip:jp) in module cmdata
+!     add new data to the sub-list (ip:jp) in module c_data
 !----------------------------------------------------------------------
       Use c_data
 
@@ -239,7 +251,7 @@ write(*,*) 'Add_matrix: jtype, jpol = ', jtype, jpol
 !======================================================================
       Subroutine Merge_cdata(nn, ip, jp, nc)
 !======================================================================
-!     merge the different blocks of data in MODULE 'cmdata'
+!     merge the different blocks of data in MODULE 'c_data'
 !     nn    - number of blocks
 !     ip(.) - pointer for begining of block .
 !     jp(.) - pointer for end of block .
@@ -366,4 +378,24 @@ write(*,*) 'Add_matrix: jtype, jpol = ', jtype, jpol
       Call Gen_matrix(itype,kpol)
 
       End Subroutine Add_matrix
+
+
+
+!======================================================================
+      Real(8) Function Cdata_occupation()      Result(S)
+!======================================================================
+      Use c_data
+   
+      Implicit none
+      Integer :: i
+
+      S = 0.d0
+      Do i=1,nb
+       if(jpblk(i).le.0) Cycle
+       S = S + jpblk(i)-ipblk(i)
+      End do
+
+      S = S / (mb*nb)  
+
+      End Function Cdata_occupation
 

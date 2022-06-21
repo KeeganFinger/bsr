@@ -10,7 +10,7 @@
                                
       Implicit none
       Integer :: i,j,l,k,m,n, ich
-      Integer, external :: Ifind_bsorb, Ifind_jjorb, Icheck_file, IORT
+      Integer, external :: Ifind_bsorb, Ifind_jjorb, Icheck_file!, IORT
 
 ! ... set up B-splines:
  

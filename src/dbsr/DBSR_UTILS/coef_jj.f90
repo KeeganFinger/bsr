@@ -255,7 +255,7 @@
         NP1(i)=IP_orb(ip1+k1); NP2(i)=IP_orb(ip2+k2)
        End do
 
-       mm = IDET_SIMP(kz,nd,NP1,NP2,mwf,IORT)
+       mm = IDET_SIMP(kz,nd,NP1,NP2)!,mwf,IORT)
 
        if(mm.eq.1) Cycle; if(mm.eq.0) go to 10
        MP(1:nd) = NP1(1:nd)*ibd+NP2(1:nd) 

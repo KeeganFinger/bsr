@@ -1,5 +1,6 @@
 set(DBSR_MAT3A_SOURCE_COMMON
   mod_dbsr_mat.f90
+  MOD_c_data.f90
   L_data.f90
   O_data.f90
   R_data.f90
@@ -27,6 +28,7 @@ set(DBSR_MAT3A_SOURCE_COMMON
    sub1.f90)
  target_link_libraries(dbsr_mat3a dbs zconfjj zcom ${BLAS_LAPACK_LIBRARIES})
 
+if(MPI_Fortran_FOUND)
  #message(WARNING "dbsr_mat3a_mpi does not build correctly")
  add_executable(dbsr_mat3a_mpi
    ${DBSR_MAT3A_SOURCE_COMMON}
@@ -48,5 +50,5 @@ set(DBSR_MAT3A_SOURCE_COMMON
    br_radial_overlaps.f90
    br_target_jj.f90
    br_barrier.f90)
- target_link_libraries(dbsr_mat3a_mpi dbs zconfjj zcom
-   ${BLAS_LAPACK_LIBRARIES} MPI::MPI_Fortran)
+ target_link_libraries(dbsr_mat3a_mpi dbs zconfjj zcom ${BLAS_LAPACK_LIBRARIES} MPI::MPI_Fortran)
+endif()
