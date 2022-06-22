@@ -1,5 +1,5 @@
 !======================================================================
-      Subroutine read_matrix
+      Subroutine read_matrix_mpi
 !======================================================================
 !     Read interaction matrix from the disk
 !----------------------------------------------------------------------
@@ -62,7 +62,7 @@
 
       Call MPI_BARRIER(MPI_COMM_WORLD, ierr)
 
-      End Subroutine read_matrix
+      End Subroutine read_matrix_mpi
 
 !======================================================================
       Subroutine Skip_matrix

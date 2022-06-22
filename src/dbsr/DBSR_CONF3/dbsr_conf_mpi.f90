@@ -107,6 +107,7 @@
       Implicit real(8) (A-H,O-Z)
 
       Character(128) :: line
+      Integer :: status(MPI_STATUS_SIZE)
       Integer, external :: Iadd_line
 
 !---------------------------------------------------------------------- 

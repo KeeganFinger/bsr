@@ -278,7 +278,7 @@
       if(mode.ne.0) then
        if(myid.eq.0) rewind(nui)
        if(myid.eq.0) read(nui) i,j,k
-       Call Read_matrix
+       Call Read_matrix_mpi
       end if 
 
       if(interrupt.gt.0.and.intercase.ne.11) then
@@ -436,7 +436,7 @@
 
 
 !======================================================================
-      Subroutine SUB1_mso
+      Subroutine SUB1_mso_mpi
 !======================================================================
 !     drive routine for one partial wave
 !----------------------------------------------------------------------
@@ -464,7 +464,7 @@
 
       if(myid.eq.0) rewind(nui)
       if(myid.eq.0) read(nui) i,j,k
-      Call Read_matrix
+      Call Read_matrix_mpi
 
       if(myid.eq.0) rewind(nuj)
       if(myid.eq.0) write(nuj) ns,nch,npert
@@ -473,7 +473,7 @@
 ! ... Interaction matrix:
 
       Call Allocate_matrix(m)
-      Call Read_matrix
+      Call Read_matrix_mpi
       if(myid.eq.0) read(nui) m
       if(myid.eq.0) read(nui) ACF
 
@@ -501,4 +501,4 @@
 
       close(nuj)
       
-      End Subroutine SUB1_mso
+      End Subroutine SUB1_mso_mpi

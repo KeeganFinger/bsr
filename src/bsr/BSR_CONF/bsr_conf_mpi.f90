@@ -114,6 +114,7 @@
 
       Implicit real(8) (A-H,O-Z)
       Character(124) :: AS
+      Integer :: status(MPI_STATUS_SIZE)
       Integer, external :: Iadd_line
 
 !---------------------------------------------------------------------- 
@@ -198,7 +199,7 @@
         Call Add_conf_LS(nuc,0)
         Close(nuc)
        End do    
-       Call Test_a
+!       Call Test_a
       end if
 
       Call MPI_BARRIER(MPI_COMM_WORLD,ierr)

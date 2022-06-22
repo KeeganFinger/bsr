@@ -3,6 +3,7 @@
 !======================================================================
       Use MPI
       Use radial_overlaps
+      Use orb_overlaps
 
       Implicit none
       
@@ -19,7 +20,7 @@
        if(allocated(iobs)) Deallocate(iobs); Allocate(iobs(mobs))
        if(allocated(jobs)) Deallocate(jobs); Allocate(jobs(mobs))
        if(allocated(Cobs)) Deallocate(Cobs); Allocate(Cobs(mobs))
-      end if
+      endif
 
       Call MPI_BCAST(iobs,mobs,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
       Call MPI_BCAST(jobs,mobs,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)

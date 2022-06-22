@@ -11,7 +11,7 @@
       Integer :: i,iarg,fail
       Character(3) :: ALSP
       Logical :: EX
-      Integer, External :: Icheck_file, IARGC
+      Integer, External :: Icheck_file
 
        write(ALSP,'(i3.3)') klsp
 
@@ -23,7 +23,7 @@
         if(klsp.gt.0) then
          i=Index(BF_c,'.'); AF=BF_c(1:i)//ALSP; BF_c=AF
         else
-         iarg = IARGC()
+         iarg = command_argument_count()
          if(iarg.gt.0) then
           Call GETARG(1,BF); i=INDEX(BF,'=')
           if(i.eq.0) then 

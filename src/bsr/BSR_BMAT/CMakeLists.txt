@@ -35,5 +35,5 @@ if(MPI_Fortran_FOUND)
      conf_calc.f90
      get_det_exp.f90
      send_det_exp.f90)
-   target_link_libraries(bsr_bmat4_mpi zconfls shells zcom bs MPI::MPI_Fortran)
+   target_link_libraries(bsr_bmat4_mpi zconfls shells zcom bs bsr_mpi ${BLAS_LAPACK_LIBRARIES} MPI::MPI_Fortran)
 endif()
