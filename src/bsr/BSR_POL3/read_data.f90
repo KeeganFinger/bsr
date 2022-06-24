@@ -136,9 +136,10 @@
       End do
 
 ! ... orthogonality conditions:
+!      if(.not.allocated(IBORT)) stop "IBORT not allocated"
 
       Do i=1,nwf; Do j=1,i
-       IORT(j,i)=IORT(i,j); IBORT(i,j)=IORT(i,j); IBORT(j,i)=IORT(i,j)
+       IORT(j,i)=IORT(i,j); IORT(i,j)=IORT(i,j); IORT(j,i)=IORT(i,j)
       End do; End do     
 
       nort = 0

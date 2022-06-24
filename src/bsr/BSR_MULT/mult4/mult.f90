@@ -110,19 +110,24 @@
       end if
 
       Call GETARG(1,AF1)
-      Call GETARG(2,AF2)
+      if(AF1.eq.'cc') then
+        Call GETARG(2,AF1)
+        Call GETARG(3,AF2)
+      else
+        Call GETARG(2,AF2)
+      endif
       
 ! ... define the type of calculations:
 
       AA = 'E1'
-      if(iarg.ge.3) Call GETARG(3,AA)
+      if(iarg.ge.3) Call read_aarg('AA',AA)
       read(AA,'(a1,i1)') ktype,kpol
       write(*,'(/a,a1,i1)') 'transition -> ',ktype,kpol
       if(ktype.eq.'M'.and.kpol.eq.0) Stop ' kpol=0 for M-type ? '
       
 ! ... mult_bnk - if indicated
 
-      if(iarg.ge.4)  Call GETARG(4,AF_b)
+      Call Read_aarg('AF_b',AF_b)
 
       Call Mult_calc
 
@@ -234,7 +239,7 @@
 
       klsp1 = 0;  Call Read_iarg('klsp1' ,klsp1 )
       klsp2 = 0;  Call Read_iarg('klsp2' ,klsp2 )
-
+      write(*,'(2(a10,i5))') 'klsp1=',klsp1,'klsp2=',klsp2
       Call Check_file('target')
       nut = 21; Open(nut,file='target')
       Call Read_ipar(nut,'nlsp',nlsp); read(nut,*)
@@ -270,8 +275,10 @@
        end if
        if(i.eq.0) Cycle
 
-       write(ALSP1,'(i3.3)') ilsp; AF1='cfg.'//ALSP1
-       write(ALSP2,'(i3.3)') jlsp; AF2='cfg.'//ALSP2
+!       write(*,'(i3.3)') ilsp; AF1='cfg.'//ALSP1
+!       write(*,'(i3.3)') jlsp; AF2='cfg.'//ALSP2
+       write(AF1,'(A4,I0.3)') "cfg.",ilsp
+       write(AF2,'(A4,I0.3)') "cfg.",jlsp
 
 !       AF_b = AF_b(1:ii)//'.'//ALSP1//'_'//ALSP2
 

@@ -7,9 +7,6 @@ add_subdirectory(BSR_DMAT4) #DONE
 add_subdirectory(BSR_HD4) #DONE
 #add_subdirectory(BSR_MAT3)
 #add_subdirectory(BSR_MAT3_MPI)
-#if(MPI_Fortran_FOUND)
-#  add_subdirectory(BSR_HDB4) #SO MANY ERRORS
-#endif()
 add_subdirectory(BSR_MAT4) #DONE
 add_subdirectory(BSR_MULT) #DONE
 add_subdirectory(BSR_PHOT3) #DONE
@@ -20,3 +17,6 @@ add_subdirectory(BSR_POL3) #DONE
 add_subdirectory(BSR_PREP3) #DONE
 add_subdirectory(BSR_RECOUP4) #DONE
 add_subdirectory(BSR_UTILS) #DONE
+if(MPI_Fortran_FOUND)
+  add_subdirectory(BSR_HDB4) #SO MANY ERRORS
+endif()
