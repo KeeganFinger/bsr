@@ -34,7 +34,7 @@ elseif (${CMAKE_Fortran_COMPILER_ID} MATCHES "PGI")
 elseif (${CMAKE_Fortran_COMPILER_ID} MATCHES "Intel")
   MESSAGE(STATUS "Compiling using ifort")
   SET(CMAKE_Fortran_FLAGS_RELEASE "-fpp -unroll-aggressive -save -safe-cray-ptr -O2 -falias")
-  SET(CMAKE_Fortran_FLAGS_DEBUG "-fpp -O0 -g")
+  SET(CMAKE_Fortran_FLAGS_DEBUG "-O0 -g")
 endif() 
 
 FIND_PACKAGE(BLAS REQUIRED)

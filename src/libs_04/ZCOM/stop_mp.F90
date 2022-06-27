@@ -2,11 +2,11 @@
     Subroutine Stop_mpi (pri, info, msg)
 !======================================================================
 !    Use MPI
+!    Integer :: myid, ierr
 
     Integer, intent(in)      :: pri, info
     Character(*), intent(in) :: msg   
 
-!    Integer :: myid, ierr
 !    Call MPI_COMM_RANK(MPI_COMM_WORLD, myid, ierr)
 !    write (pri,*) 'myid = ', myid
 !    Call MPI_ABORT(MPI_COMM_WORLD,1,ierr)

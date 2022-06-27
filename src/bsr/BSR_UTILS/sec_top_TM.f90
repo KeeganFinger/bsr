@@ -31,7 +31,7 @@
       Character(80) ::  AS
 
       Real(8), external :: Fdip0, IZ0_lamda
-      Real(8) :: kap1, kap2
+      Real(8) :: kap1, kap2, k1, k2
 !----------------------------------------------------------------------
 ! ... files:
 
@@ -724,12 +724,16 @@
 
       S=SUM(fll);  om_sum(itr,ie)=S;  om_top(itr,ie)=S
 
+      k1=sqrt(e1); k2=sqrt(e2);
+
       Do l=1,ll_max
 
        eps = 1.d-5
-       F1 = Fdip0(e1,l,e2,l-1,eps,ifail)
-       F2 = Fdip0(e1,l-1,e2,l,eps,ifail)
-       if(ifail.ne.0) write(*,'(a,i5,2f10.5)') 'Fdip0 fail: ',l,e1,e2
+!       F1 = Fdip0(e1,l,e2,l-1,eps,ifail)
+       F1 = IZ0_lamda(1,k1,l,k2,l-1)
+!       F2 = Fdip0(e1,l-1,e2,l,eps,ifail)
+       F2 = IZ0_lamda(1,k1,l-1,k2,l)
+       if(ifail.ne.0) write(*,'(a,i5,2f10.5)') 'Fdip0 fail: ',l,k1,k2
        om1 = 16.d0/3 * l * OS(itr1,itr2) * F2**2
        om2 = 16.d0/3 * l * OS(itr1,itr2) * F1**2
        if(jtr1.ne.0) write(pri,'(i2,a1,4E15.5)') l,'.',fll(l,:),om1,om2

@@ -1,7 +1,7 @@
 add_executable(mult4
   mod_param.f90
   mod_spinorb.f90
-  mod_termexp.f90
+  #  mod_termexp.f90
   mod_coef.f90
   mod_zoef.f90
   add_res.f90

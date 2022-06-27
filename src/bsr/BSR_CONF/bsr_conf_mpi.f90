@@ -164,7 +164,7 @@
       end if
 
       Call br_orb
-      if(nwf.ne.nwt) Call Stop_mpi(pri,0,'nwf in target.bsw <> nwt')
+      if(nwf.ne.nwt) Call Stop_mpi(pri,1,'nwf in target.bsw <> nwt')
       max_ll_targ = maxval(LEF(1:nwf))
 
       if(pri.gt.0) &
@@ -213,6 +213,7 @@
       if(pri.gt.0) write(pri,'(/a,T33,i8/)') &
        'number of target configurations:',ncfg-ncfg_phys
 
+      write(*,*) myid,ncfg-ncfg_phys,nct
       if(ncfg-ncfg_phys.ne.nct) &
         Call Stop_mpi(pri,0,'ncfg_target <> nct from target')
 

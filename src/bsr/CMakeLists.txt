@@ -17,6 +17,6 @@ add_subdirectory(BSR_POL3) #DONE
 add_subdirectory(BSR_PREP3) #DONE
 add_subdirectory(BSR_RECOUP4) #DONE
 add_subdirectory(BSR_UTILS) #DONE
-if(MPI_Fortran_FOUND)
-  add_subdirectory(BSR_HDB4) #SO MANY ERRORS
-endif()
+#if(MPI_Fortran_FOUND)
+#  add_subdirectory(BSR_HDB4) #SO MANY ERRORS
+#endif()

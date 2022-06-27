@@ -109,13 +109,19 @@
        Stop 'mult name1 name2 [E1|M1|..] AF_bnk'
       end if
 
-      Call GETARG(1,AF1)
-      if(AF1.eq.'cc') then
-        Call GETARG(2,AF1)
-        Call GETARG(3,AF2)
-      else
-        Call GETARG(2,AF2)
-      endif
+!      Call GETARG(1,AF1)
+!      write(*,*) AF1
+!      if(AF1.eq.'cc') then
+!        Call GETARG(2,AF1)
+!        Call GETARG(3,AF2)
+!      else
+!        Call GETARG(2,AF2)
+!      endif
+!      write(*,*) AF1,AF2
+
+      Call read_aarg('initial',AF1)
+      Call read_aarg('final',AF2)
+      write(*,*) AF1,AF2
       
 ! ... define the type of calculations:
 
@@ -223,14 +229,14 @@
       USE mult_par  
 
       Character(3) :: ALSP1,ALSP2, tpar
-      Character(2) :: AA
+      Character(2) :: AA='E1'
 
       Integer, allocatable :: lpar(:),ispar(:),ipar(:),jpar(:)
 
 ! ... define the type of calculations:
 
       Call Read_aarg('AA',AA)
-      if(AA.ne.'xx') read(AA,'(a1,i1)') ktype,kpol
+      read(AA,'(a1,i1)') ktype,kpol
       write(*,'(/a,a1,i1)') 'transition -> ',ktype,kpol
       if(ktype.eq.'M'.and.kpol.eq.0) Stop ' kpol=0 for M-type ? '
       Call Read_aarg('AF_b',AF_b)

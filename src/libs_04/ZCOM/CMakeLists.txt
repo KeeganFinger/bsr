@@ -19,7 +19,7 @@ set(ZCOM_SOURCES
   FUN_legendre.f90         FUN_zcfg.f90             gauss_LA.f90
   FUN_zcoulfg90.f90	   FUN_zcoulwf.f90	    ndet_fact.f90
   gauss_points.f90         get_ij.f90               interv.f90
-  inv.f90                  ipointer.f90	   	    
+  inv.f90                  ipointer.f90	   	    Coulomb_integral_0.f90
   LAPACK_calls_hack.F90    num.f90                  read_arg.f90
   read_par.f90             recup_a.f90              rrtc.f90
   SCT_coul_phase.f90       SCT_epahse.f90           SCT_fano_tma.f90
@@ -28,8 +28,9 @@ set(ZCOM_SOURCES
   SCT_zkmat.f90            SCT_zrmat.f90            SCT_zsmat.f90
   sl_scale.f90             sorting_routines.f90     spectroscopic.f90
   splin3.f90               xlagr.f90                zis.f90
-  xAy.f90                  det_fact.f90             stop_mp.f90
+  xAy.f90                  det_fact.f90             stop_mp.F90
   check_det_new.f90	   index_tr.f90)
+
 
 # Gfortran no longer provides an implementation of iargc, so this
 # simple routine is added when Gfortran is the compiler used.
