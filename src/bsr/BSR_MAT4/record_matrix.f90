@@ -4,6 +4,7 @@
 !     record interaction/overlap matrix to the unit 'nu'
 !----------------------------------------------------------------------
       Use bsr_mat                               
+      Use channel, only: nch
 
       Implicit none
       Integer, intent(in) :: nu

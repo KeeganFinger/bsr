@@ -11,6 +11,7 @@
       Use term_exp, only: kt1,kt2, IP_kt1, IP_kt2
       Use c_blocks, only: ntype
       Use coef_list, only: ncoef,coef,idfc,intc
+      Use spline_orbitals, only: iech
       Implicit none
       Integer, intent(in) :: is_conf,js_conf
       Integer :: i,j,k,it,jt,is,js,is1,is2,js1,js2,ik,jk,ich,jch,ip1,ip2,ik1,ik2
@@ -137,7 +138,7 @@
 
 ! ... find overlap factors with extracted continuum:  
 
-       Call Ndet_fact(idf,np1,np2); if(nndef.eq.0) Cycle
+       Call Ndet_fact(idf,np1,np2,iech); if(nndef.eq.0) Cycle
 
 ! ... send the final coefficients to archive:
 

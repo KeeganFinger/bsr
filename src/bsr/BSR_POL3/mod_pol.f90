@@ -33,6 +33,7 @@
       Integer :: nort = 0          ! number of orthogonal constraints
       Integer :: nortb = 0
       Integer, allocatable :: iortb(:)
+      Integer, allocatable :: IBORT(:,:)
 
       Real(8), allocatable :: a(:,:)      ! interaction matrix
       Real(8), allocatable :: c(:,:)      ! overlap matrix

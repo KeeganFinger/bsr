@@ -13,7 +13,6 @@
       Integer :: i,j,m,k,l,info,ii,jj,ich
       Real(8) :: sol(mhm), aa(mhm), cc(mhm)
       Real(8) :: S,EP, alfa,fvalue,dmat
-      Integer, allocatable :: IBORT(:,:)
 
 ! ... save matrixes:
 

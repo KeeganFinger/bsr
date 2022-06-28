@@ -14,7 +14,6 @@
 
       i=LEN_TRIM(AF_int); AF_int(i-2:i)=ALSP
       Call Check_file(AF_int)
-      write(*,*) AF_int
       Open(nui,file=AF_int,form='UNFORMATTED')
 
 ! ... check the dimensions:
@@ -26,9 +25,6 @@
       
       nhm = nch*ns + ncp
       mhm = nhm + nort + nortb
-      write(*,*) 'nch',nch,'ncp',ncp,'ns',ns
-      write(*,*) 'nort',nort,'nortb',nortb
-      write(*,*) 'i1',i1,'i2',i2,'i3',i3
 
       write(pri,'( a,i5,a)') 'nhm  = ',nhm,'  - interaction matrix'
       write(pri,'( a,i5,a)') 'mhm  = ',mhm,'  - full size of matrix'
@@ -63,13 +59,7 @@
 ! ... diagonal blocks:
 
       Do i=1,kch; i1=(i-1)*ns+1; i2=i*ns
-       write(*,*) i,i1,i2
-       do j=i1,i2
-       do k=i1,i2
-       write(*,*)'j=',j,'k=',k
-       read(nui) a(j,k)
-       enddo
-       enddo
+       read(nui) a(i1:i2,i1:i2)
       End do
 
 ! ... other elements if any:

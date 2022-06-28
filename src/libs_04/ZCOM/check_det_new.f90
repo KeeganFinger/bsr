@@ -5,6 +5,7 @@
 !     so that to extract one-electron overlaps with continuum orbitals;
 !     ipbs - pointer to the continuum orbtal
 !----------------------------------------------------------------------
+
       Implicit none
       Integer, intent(in) :: kd, iext, N1(*),N2(*),ipbs(*)
       Integer :: N3(kd),N4(kd),N5(kd),N6(kd)
