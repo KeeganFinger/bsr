@@ -114,14 +114,15 @@
 
        if(lpar(i)+lpar(j).lt.kk) Cycle      
 
-       write(AS,'(10(a,1x))') 'mult4',trim(BI),trim(BJ),atype,' >> zf_bb.out'
+       write(AS,'(3(a,a,1x),a)') './mult4 initial=',trim(BI),'final=',&
+        trim(BJ),'AA=',atype,' >> zf_bb.out'
 
        write(*,*) trim(AS)
 
        Call System(AS)
 
        write(AS,'(a,a,1x,a,a,a,a,a,i3.3,a,i3.3,a)')         &
-         'bsr_dmat4 ',trim(BI),trim(BJ),' b b ','gf=',gf, &
+         './bsr_dmat4 ',trim(BI),trim(BJ),' b b ','gf=',gf, &
          ' mstate1=',mstate(ii),' mstate2=',mstate(jj),' >> zf_bb.out'
 
        write(*,*) trim(AS)

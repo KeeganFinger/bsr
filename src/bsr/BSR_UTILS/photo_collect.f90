@@ -19,7 +19,7 @@
       ii=INDEX(AF_out,'.',BACK=.TRUE.)
       write(AF,'(a,i3.3)') AF_out(1:ii),klsp
       Do i=0,nprocs-1
-        write(BF,'(a,i4.4)') AF_out(1:ii),i
+        write(BF,'(a,i3.3)') AF_out(1:ii),i
         write(AS,'(a,a,a,a)') 'cat ',trim(BF),' >> ',trim(AF)
         Call System(AS)
       End do
@@ -27,7 +27,7 @@
        ii=INDEX(AF_ph,'.',BACK=.TRUE.)
        write(AF,'(a,i3.3)') AF_ph(1:ii),klsp
        Do i=0,nprocs-1
-         write(BF,'(a,i4.4)') AF_ph(1:ii),i
+         write(BF,'(a,i3.3)') AF_ph(1:ii),i
          write(AS,'(a,a,a,a)') 'cat ',trim(BF),' >> ',trim(AF)
          Call System(AS)
        End do
