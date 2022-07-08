@@ -58,7 +58,7 @@
 
 
 !======================================================================
-      Subroutine alloc_c_data(nt,kp1,kp2,mblock,nblock,kblock,eps_c,m)
+      Subroutine alloc_c_data(nt,kp1,kp2,mblock,nblock,kblock,eps_c)
 !======================================================================
 !     allocate (deallocate) arrays in module c_data 
 !----------------------------------------------------------------------
