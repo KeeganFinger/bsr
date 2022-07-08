@@ -3,7 +3,7 @@
 !======================================================================
 !     read data for given partial wave, klsp
 !----------------------------------------------------------------------
-      Use bsr_mat
+      Use bsr_mat; use channel
       Use conf_LS;  Use orb_LS
       Use det_list; Use def_list  
 

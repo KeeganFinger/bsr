@@ -5,34 +5,32 @@
       IMPLICIT REAL(8) (A-H,O-Z)
 
       Integer, parameter :: ma = 80
-      Integer :: ics = 16; Character(ma) :: AF_out  = 'bsr_phot.nnn'
-      Integer :: iph = 17; Character(ma) :: AF_ph   = 'photo.nnn'
+      Integer :: ics = 16; Character(ma) :: AF_out  = 'bsr_phot.out'
+      Integer :: iph = 17; Character(ma) :: AF_ph   = 'photo.out'
       Character(ma) :: AF,BF,AS   
 
       Character(60) :: AFORM
 
-      klsp = 1
-      Call Read_iarg('klsp',klsp)
-      nprocs = 1024
-      Call Read_iarg('np',nprocs)
+      klsp1 = 1; klsp2 = 0;
+      Call Read_iarg('klsp1',klsp1)
+      Call Read_iarg('klsp2',klsp2)
+      if(klsp2.lt.klsp1) stop 'klsp2 < klsp1'
 
       ii=INDEX(AF_out,'.',BACK=.TRUE.)
-      write(AF,'(a,i3.3)') AF_out(1:ii),klsp
-      Do i=0,nprocs-1
+      Do i=klsp1,klsp2
         write(BF,'(a,i3.3)') AF_out(1:ii),i
-        write(AS,'(a,a,a,a)') 'cat ',trim(BF),' >> ',trim(AF)
+        write(AS,'(a,a,a,a)') 'cat ',trim(BF),' >> ',trim(AF_out)
         Call System(AS)
       End do
      
        ii=INDEX(AF_ph,'.',BACK=.TRUE.)
-       write(AF,'(a,i3.3)') AF_ph(1:ii),klsp
-       Do i=0,nprocs-1
+       Do i=klsp1,klsp2
          write(BF,'(a,i3.3)') AF_ph(1:ii),i
-         write(AS,'(a,a,a,a)') 'cat ',trim(BF),' >> ',trim(AF)
+         write(AS,'(a,a,a,a)') 'cat ',trim(BF),' >> ',trim(AF_ph)
          Call System(AS)
        End do
 
-       open(iph,file=AF)
+       open(iph,file=AF_ph)
        Call Sort_photo(iph,AFORM)
  
       END  ! program photo_collect 
