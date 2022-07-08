@@ -281,7 +281,7 @@
       Use bsr_mat
       Use c_data
       Use conf_LS; Use symc_list_LS; Use symt_list_LS
-      Use orb_overlaps, only: mem_orb_overlaps
+      Use overlaps, only: mem_orb_overlaps
 
       Implicit none
       Integer :: k,l, m,mm, npol

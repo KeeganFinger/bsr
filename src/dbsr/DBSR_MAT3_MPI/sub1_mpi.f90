@@ -7,7 +7,7 @@
       Use dbsr_mat                      
       Use c_data           
       Use DBS_integrals, only: memory_DBS_integrals
-      Use radial_overlaps 
+      Use overlaps 
 
       Implicit none
       Integer :: i,j, ich,jch,  k, is,js, it,jt, met, nelc_core
@@ -269,10 +269,10 @@
 
       if(myid.eq.0) Allocate(cc(nch+npert,nch+npert))
 
-      Call MPI_REDUCE(overlaps,CC,(nch+npert)*(nch+npert),MPI_DOUBLE_PRECISION,MPI_MAX, &
+      Call MPI_REDUCE(overlap_vals,CC,(nch+npert)*(nch+npert),MPI_DOUBLE_PRECISION,MPI_MAX, &
                       0,MPI_COMM_WORLD,ierr)
       if(myid.eq.0) then
-        overlaps = CC; deallocate(CC); CO = SUM(overlaps)
+        overlap_vals = CC; deallocate(CC); CO = SUM(overlap_vals)
 
       end if
       Call MPI_BCAST(CO,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,ierr)
@@ -352,7 +352,7 @@
 
       end if
 
-      Deallocate(overlaps)
+      Deallocate(overlap_vals)
 
 ! ... L-integrals:
 

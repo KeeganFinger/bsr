@@ -18,8 +18,8 @@
       Integer :: i,j,k, ich,jch, isol,jsol
 
       if(icase.eq.0) then
-       if(allocated(overlaps)) Deallocate(overlaps)
-       Allocate(overlaps(nch+npert,nch+npert)); overlaps = 0.d0
+       if(allocated(overlap_vals)) Deallocate(overlap_vals)
+       Allocate(overlap_vals(nch+npert,nch+npert)); overlap_vals = 0.d0
       end if
  
 ! ... channel-channel blocks:
@@ -36,7 +36,7 @@
         Do j=1,jsol; c(i,j)=SUM(w(:)*diag(:,j,jch)); End do 
        End do       
        hch(:,:,k) = c(:,:)
-       if(icase.eq.0) overlaps(ich,jch) = maxval(abs(c(1:isol,1:jsol)))
+       if(icase.eq.0) overlap_vals(ich,jch) = maxval(abs(c(1:isol,1:jsol)))
 
       End do; End do
 
@@ -51,13 +51,13 @@
        w = 0.d0
        Do i=1,isol; w(i)=SUM(diag(:,i,ich)*hcp(:,k)); End do
        hcp(:,k) =  w(:)
-       if(icase.eq.0) overlaps(nch+jch,ich) = maxval(abs(w(1:isol)))
+       if(icase.eq.0) overlap_vals(nch+jch,ich) = maxval(abs(w(1:isol)))
       End do; End do
 
       Do i=1,npert; Do j=1,i
        k = ibb(i,j)
        if(hp(k).eq.0.d0) Cycle
-       if(icase.eq.0) overlaps(nch+i,nch+j) = abs(hp(k))
+       if(icase.eq.0) overlap_vals(nch+i,nch+j) = abs(hp(k))
       End do; End do
 
       end if    !   npert

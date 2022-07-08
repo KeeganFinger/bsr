@@ -3,7 +3,7 @@
 !======================================================================
 !     allocate, de-allocate or re-allocate arrays in given module
 !----------------------------------------------------------------------
-      Use orb_overlaps
+      Use overlaps
 
       Implicit none
       Integer, intent(in) :: nbf,lbs(nbf),iech(nbf),ncore

@@ -4,7 +4,8 @@ add_executable(bsr_dmat4
    mod_cmdata.f90
    mod_coeffs.f90
    mod_dmat.f90
-   MOD_orb_overlaps.f90
+#   MOD_orb_overlaps.f90
+   alloc_orb_overlaps.f90
    add_cdata.f90
    add_coef.f90
    check_det.f90

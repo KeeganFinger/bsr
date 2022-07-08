@@ -13,7 +13,7 @@
       Integer, external :: IBORT
 
       met = 0
-      if(SUM(overlaps).eq.0.d0) Return
+      if(SUM(overlap_vals).eq.0.d0) Return
 
       Close(nuc);  Open(nuc,file=AF_cfg,position='APPEND'); write(nuc,*)
 
@@ -21,13 +21,13 @@
 
       Do ich=2,nch
        Do jch=1,ich-1
-        if(overlaps(ich,jch).lt.s_ovl) Cycle 
+        if(overlap_vals(ich,jch).lt.s_ovl) Cycle 
         met = met + 1
         ! ... find bigest overlap and put orth.condition
         Call Def_SM(ich,jch)       
         if(SM.eq.0.d0) Call Def_SM(jch,ich)
         if(SM.eq.0.d0) then
-         write(pri,'(2a10,f10.5)') elc(ich),elc(jch),overlaps(ich,jch)
+         write(pri,'(2a10,f10.5)') elc(ich),elc(jch),overlap_vals(ich,jch)
          Stop 'I cannot find orth.condition'
         end if
        End do  ! over jch
@@ -42,7 +42,7 @@
       Do ich=1,nch
 
        Do ip=1,npert
-        if(overlaps(nch+ip,ich).lt.s_ovl) Cycle 
+        if(overlap_vals(nch+ip,ich).lt.s_ovl) Cycle 
         met = met + 1 
 
         ! ... find bigest overlap and put orth.condition
@@ -66,9 +66,9 @@
          it = iptar(ich)
          write(nuc,'(a1,a5,a1,a5,a3,5x,a12,a6,5x,a12,i6,3f10.3)') &
             '<',elc(ich),'|',ebs(jm),'>=0', AFT(it),elc(ich), 'perturber   ',ip,SM, &
-            overlaps(nch+ip,ich), s_ovl 
+            overlap_vals(nch+ip,ich), s_ovl 
          Call Nulify_BORT(ipch(ich),jm)  
-         overlaps(:,ich) = 0.d0
+         overlap_vals(:,ich) = 0.d0
 
        End do ! over perturbers
 
@@ -79,7 +79,7 @@
       if(npert.le.1) Return
 
       Do i=2,npert; Do j=1,i-1                 
-       S = abs(overlaps(i+nch,j+nch))
+       S = abs(overlap_vals(i+nch,j+nch))
        if(S.lt.S_ovl) Cycle
        write(nuc,'(f10.5,2i5,a)') S, i,j , ' - suspicious perturber overlap '
       End do; End do
@@ -111,9 +111,9 @@
       it = iptar(ich)
       write(nuc,'(a1,a5,a1,a5,a3,5x,a12,a6,5x,a12,a6,3f10.3)') &
          '<',elc(ich),'|',ebs(jm),'>=0', AFT(it),elc(ich), AFT(jt),elc(jch), SM, &
-         overlaps(ich,jch), s_ovl 
+         overlap_vals(ich,jch), s_ovl 
       Call Nulify_bort(ipch(ich),jm) 
-      overlaps(:,jch) = 0.d0
+      overlap_vals(:,jch) = 0.d0
 
       End Subroutine Def_SM
 

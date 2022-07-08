@@ -2,8 +2,7 @@
       Subroutine br_radial_overlaps
 !======================================================================
       Use MPI
-      Use radial_overlaps
-      Use orb_overlaps
+      Use overlaps
 
       Implicit none
       

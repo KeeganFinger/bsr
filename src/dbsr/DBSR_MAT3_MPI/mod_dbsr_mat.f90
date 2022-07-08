@@ -144,7 +144,7 @@
 
       Real(8), allocatable :: diag(:,:,:), eval(:)
       Integer, allocatable :: iprm(:), ipsol(:), jpsol(:)
-      Real(8), allocatable :: overlaps(:,:)
+      Real(8), allocatable :: overlap_vals(:,:)
 
       Integer :: iicc, iicb, iibb  !  dimensions
       Integer, allocatable :: icc(:,:), icb(:,:), ibb(:,:)
