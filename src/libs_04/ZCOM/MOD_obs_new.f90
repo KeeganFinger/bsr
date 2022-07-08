@@ -15,7 +15,6 @@
       Integer, allocatable :: lorb(:)   ! list of l-values for all orbitals 
       Integer, allocatable :: ipl(:)    ! l-values ordering pointer
       Integer, allocatable :: jpl(:)    ! jpl(ipl(i)) = i
-      Integer, allocatable :: chan(:)   ! channel index (i =0 -> no channel associated) 
 
 ! ... base pointer to orbitals for given l, (0:max_l) arrays
 
@@ -264,21 +263,3 @@
 
       End Subroutine Check_orb_overlaps
 
-
-!======================================================================
-      Integer Function IBORT(io,jo)
-!======================================================================
-!     recover old definition IBORT
-!----------------------------------------------------------------------
-      Use overlaps
-
-      Implicit none
-      Integer, intent(in) :: io,jo
-      Real(8), external :: OBS
-
-      if(chan(io).eq.0.and.chan(jo).eq.0) &
-        Call Stop_mpi (0,0,'IBORT for bound orbitals?')
-
-      IBORT = NINT(OBS(io,jo))
-
-      End Function IBORT

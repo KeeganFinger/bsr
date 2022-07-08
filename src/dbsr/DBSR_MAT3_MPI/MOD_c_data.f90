@@ -91,6 +91,8 @@
       m = 7*m + 4*nb + (kpol2-kpol1+1)*(2+nb)*ntype
       mem_cdata = m * 4.0 / (1024 * 1024) 
 
+      Call initilize_c_data
+
       End Subroutine alloc_c_data
 
 

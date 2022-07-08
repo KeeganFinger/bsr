@@ -283,32 +283,32 @@
       End Function KBORT
 
 !======================================================================
-!      Integer Function IBORT(io,jo)
+      Integer Function IBORT(io,jo)
 !======================================================================
 !     recover old definition IBORT
 !----------------------------------------------------------------------
-!      Use DBS_orbitals_pq, only: ipbs,ib
-!
-!      Implicit none
-!      Integer, intent(in) :: io,jo
-!      Integer :: i,j
-!      Integer, external :: KBORT
-!
-!      if(ipbs(io).gt.0.and.ipbs(jo).eq.0) then
-!        i = io; j = jo
-!      elseif(ipbs(io).eq.0.and.ipbs(jo).gt.0) then
-!        j = io; i = jo
-!      elseif(ipbs(io).gt.0.and.ipbs(jo).gt.0) then
-!        i = max(io,jo); j = min(io,jo)
-!        IBORT = i*ib+j; Return
-!      else
-!        Stop 'JBORT for bound orbitals?'
-!      end if
-!
-!      IBORT = KBORT(i,j)
-!      if(IBORT.gt.0) IBORT = i*ib+j
-!
-!      End Function IBORT
+      Use DBS_orbitals_pq, only: ipbs,ib
+
+      Implicit none
+      Integer, intent(in) :: io,jo
+      Integer :: i,j
+      Integer, external :: KBORT
+
+      if(ipbs(io).gt.0.and.ipbs(jo).eq.0) then
+        i = io; j = jo
+      elseif(ipbs(io).eq.0.and.ipbs(jo).gt.0) then
+        j = io; i = jo
+      elseif(ipbs(io).gt.0.and.ipbs(jo).gt.0) then
+        i = max(io,jo); j = min(io,jo)
+        IBORT = i*ib+j; Return
+      else
+        Stop 'JBORT for bound orbitals?'
+      end if
+
+      IBORT = KBORT(i,j)
+      if(IBORT.gt.0) IBORT = i*ib+j
+
+      End Function IBORT
 
 
 !======================================================================

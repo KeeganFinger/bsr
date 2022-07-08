@@ -91,7 +91,7 @@
 !----------------------------------------------------------------------
 ! ... read B-spline expantions for bound orbitals:
    
-      Call Allocate_bsorb_old(nwf)
+      Call Allocate_bsorb(nwf)
       nbf = nwf
       Do i = 1,nbf
        ebs(i)=ELF(i); nbs(i)=NEF(i); lbs(i)=LEF(i); kbs(i)=KEF(i)

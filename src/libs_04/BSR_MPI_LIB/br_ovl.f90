@@ -5,6 +5,7 @@
 !======================================================================
       Use MPI
       Use overlaps
+      Use spline_orbitals
 
       Implicit none
       Integer :: myid,ierr

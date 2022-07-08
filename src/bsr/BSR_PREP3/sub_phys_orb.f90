@@ -36,7 +36,7 @@
        Do k=ncore+1,nbf
         if(iech(k).ne.1)      Cycle
         if(lbs(k).ne.lbs(ii)) Cycle
-        s_ovl = abs(OBS(k,ii))
+        s_ovl = abs(OBS_arr(k,ii))
         if(s_ovl.lt.SM)       Cycle
         SM = s_ovl; if(s_ovl.gt.eps_sub) jj = k
        End do
@@ -45,7 +45,7 @@
 
        if(jj.eq.0) then
          Call Add_sub_orbital(ii,jj) 
-         SM = OBS(ii,jj)
+         SM = OBS_arr(ii,jj)
        end if
 
        write(muc,'(a4,f8.1,5x,a4,f8.3)') ebs(ii),S_orb(ii),ebs(jj),SM
