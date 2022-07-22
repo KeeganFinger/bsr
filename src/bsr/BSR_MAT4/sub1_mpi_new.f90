@@ -76,39 +76,40 @@
 
 !----------------------------------------------------------------------
 !                                                        overlap matrix:
-      Call SUB1_overlaps;  if(interrupt.gt.0) Return
+      Call SUB1_overlaps
+      if(interrupt.gt.0) Return
 
 !----------------------------------------------------------------------
 ! ...  Interaction matrix:
 !----------------------------------------------------------------------
 !                                  core-energy and target-energy shift:
       if(mode.eq.0) then
+        hcc = hcc * EC
+        if(npert.gt.0) then
+          hcb = hcb * EC
+          hbb = hbb * EC
+        end if
 
-       hcc = hcc * EC
-       if(npert.gt.0) then;  hcb = hcb * EC; hbb = hbb * EC; end if
-
-       Do ich = 1,nch
-        C = Etarg(iptar(ich))-EC      ! htarg - ???
-        if(icc(ich,ich).ne.0) Call UPDATE_HL(ich,ich,ns,ks,sb,C)
-       End do
-
+        Do ich = 1,nch
+          C = Etarg(iptar(ich))-EC      ! htarg - ???
+          if(icc(ich,ich).ne.0) Call UPDATE_HL(ich,ich,ns,ks,sb,C)
+        End do
       else
+        Call Allocate_matrix(i)
+        Call Read_matrix_mpi
 
-       Call Allocate_matrix(i)
-       Call Read_matrix_mpi
-       if(myid.eq.0) then
-        read(nui) m
-        read(nui) ACF
-        read(nui) htarg
-        read(nui) otarg
-       end if
+        if(myid.eq.0) then
+          read(nui) m
+          read(nui) ACF
+          read(nui) htarg
+          read(nui) otarg
+        end if
 
-       m = nch*nch*(mk+1)
-       Call MPI_BCAST(acf  ,m,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,ierr)
-       m = (nch+1)*nch/2
-       Call MPI_BCAST(htarg,m,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,ierr)
-       Call MPI_BCAST(otarg,m,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,ierr)
-
+        m = nch*nch*(mk+1)
+        Call MPI_BCAST(acf  ,m,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,ierr)
+        m = (nch+1)*nch/2
+        Call MPI_BCAST(htarg,m,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,ierr)
+        Call MPI_BCAST(otarg,m,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,ierr)
       end if
 
 !----------------------------------------------------------------------
@@ -128,57 +129,61 @@
 
       t1 = MPI_WTIME();   Call BS_ORTH;    t2 = MPI_WTIME()
 
-      if(pri.gt.0) &
-      write(pri,'(a,T20,f10.1,a)') 'BS_ORTH:  ',(t2-t1)/60,' min '
-      if(myid.eq.0) &
-      write(*  ,'(a,T20,f10.1,a)') 'BS_ORTH:  ',(t2-t1)/60,' min '
+      if(myid.eq.0) then
+        write(pri,'(a,T20,f10.1,a)') 'BS_ORTH:  ',(t2-t1)/60,' min '
+        write(*  ,'(a,T20,f10.1,a)') 'BS_ORTH:  ',(t2-t1)/60,' min '
+      endif
 
 ! ... record interaction matrix:
 
-   10 t1 = MPI_WTIME();   Call Record_matrix(nuj);   t2 = MPI_WTIME()
+   10 t1 = MPI_WTIME();   Call Record_matrix_mpi(nuj);   t2 = MPI_WTIME()
 
-      if(pri.gt.0) &
-      write(pri,'(/a,T20,f10.1,a)') 'Record matrix:',(t2-t1)/60,' min '
-      if(myid.eq.0) &
-      write(*  ,'( a,T20,f10.1,a)') 'Record matrix:',(t2-t1)/60,' min '
+      if(myid.eq.0) then
+        write(pri,'(/a,T20,f10.1,a)') 'Record matrix:',(t2-t1)/60,' min '
+        write(*  ,'( a,T20,f10.1,a)') 'Record matrix:',(t2-t1)/60,' min '
+      endif
 
 !----------------------------------------------------------------------
 ! ... asymptotic coefficients:
 
       t1 = MPI_WTIME();    Call Collect_ACF;    t2 = MPI_WTIME()
 
-      if(pri.gt.0) &
-      write(pri,'(/a,T20,f10.1,a)') 'Collect_ACF:',(t2-t1)/60,' min '
-      if(myid.eq.0) &
-      write(*  ,'( a,T20,f10.1,a)') 'Collect_ACF:',(t2-t1)/60,' min '
+      if(myid.eq.0) then
+        write(pri,'(/a,T20,f10.1,a)') 'Collect_ACF:',(t2-t1)/60,' min '
+        write(*  ,'( a,T20,f10.1,a)') 'Collect_ACF:',(t2-t1)/60,' min '
+      endif
 
       if(myid.eq.0) then
-       write(nuj) mk;  write(nuj) ACF
-       if(pri_f.gt.0) Call f_values
+        write(nuj) mk
+        write(nuj) ACF
+        if(pri_f.gt.0) Call f_values
       end if
 
 !----------------------------------------------------------------------
 ! ... target interaction matrix:
 
       if(interrupt.eq.0) then
-       t1 = MPI_WTIME();  Call Collect_otarg;  Call Collect_htarg; t2 = MPI_WTIME()
-       if(pri.gt.0) &
-        write(pri,'(/a,T20,f10.1,a)') 'Collect_targ:',(t2-t1)/60,' min '
-       if(myid.eq.0) &
-        write(*  ,'( a,T20,f10.1,a)') 'Collect_targ:',(t2-t1)/60,' min '
+        t1 = MPI_WTIME()
+        Call Collect_otarg
+        Call Collect_htarg
+        t2 = MPI_WTIME()
+        if(myid.eq.0) then
+          write(pri,'(/a,T20,f10.1,a)') 'Collect_targ:',(t2-t1)/60,' min '
+          write(*  ,'( a,T20,f10.1,a)') 'Collect_targ:',(t2-t1)/60,' min '
+        endif
       end if
 
       if(myid.eq.0) then
-       if(iitar.ne.0.and.interrupt.eq.0) Call Target_new
-       write(nuj) htarg
-       write(nuj) otarg
-       write(nuj) Etarg
-       write(nuj) EC
-       close(nuj)
-       if(interrupt.eq.0) Call Target_print(pri,Eps_tar)
+        if(iitar.ne.0.and.interrupt.eq.0) Call Target_new
+        write(nuj) htarg
+        write(nuj) otarg
+        write(nuj) Etarg
+        write(nuj) EC
+        close(nuj)
+        if(interrupt.eq.0) Call Target_print(pri,Eps_tar)
       end if
 
-      End Subroutine SUB1
+    End Subroutine SUB1_MPI
 
 
 
@@ -231,13 +236,15 @@
 ! ... splines:
 
       m = memory_splines()
-      if(pri.gt.0)  write(pri,'(a,T33,f8.1,a)') 'B-splines arrays:',m*4.0/(1024*1024),'  Mb'
+      if(myid.eq.0)  write(pri,'(a,T33,f8.1,a)') &
+        'B-splines arrays:',m*4.0/(1024*1024),'  Mb'
       mm = mm + m
 
 ! ... configurations;
 
       m = m_symc + m_symt + m_conf_LS + ncfg
-      if(pri.gt.0)  write(pri,'(a,T33,f8.1,a)') 'Configurations:',m*4.0/(1024*1024),'  Mb'
+      if(myid.eq.0) write(pri,'(a,T33,f8.1,a)') &
+        'Configurations:',m*4.0/(1024*1024),'  Mb'
       mm = mm + m
 
 ! ... interaction matrix:
@@ -247,7 +254,8 @@
       Call MPI_REDUCE(i,m,1,MPI_INTEGER,MPI_MAX,0,MPI_COMM_WORLD,ierr)
       if(myid.ne.0) m=i
       mm = mm + m
-      if(pri.gt.0)  write(pri,'(a,T33,f8.1,a)') 'Total estimations: ',mm*4.0/(1024*1024),'  Mb'
+      if(myid.eq.0) write(pri,'(a,T33,f8.1,a)') &
+        'Total estimations: ',mm*4.0/(1024*1024),'  Mb'
 
       ! ... the < . | j > values:
 
@@ -271,16 +279,16 @@
       Call CPU_time(t1)
 
       if(mode.ne.0) then
-       if(myid.eq.0) rewind(nui)
-       if(myid.eq.0) read(nui) i,j,k
-       Call Read_matrix_mpi
+        if(myid.eq.0) rewind(nui)
+        if(myid.eq.0) read(nui) i,j,k
+        Call Read_matrix_mpi
       end if
 
       if(interrupt.gt.0.and.intercase.ne.11) then
-       if(myid.eq.0) rewind(nuj)
-       if(myid.eq.0) write(nuj) ns,nch,npert
-       Call Record_matrix(nuj)
-       Return
+        if(myid.eq.0) rewind(nuj)
+        if(myid.eq.0) write(nuj) ns,nch,npert
+        Call Record_matrix_mpi(nuj)
+        Return
       end if
 
       flag = 0
@@ -289,9 +297,9 @@
       ! ... B-spline overlaps:  iitar =2  ???
 
       if(mode.eq.0.or.flag.gt.0) then
-       Do ich=1,nch
-        if(icc(ich,ich).ne.0) Call UPDATE_HL(ich,ich,ns,ks,sb,1.d0)
-       End do
+        Do ich=1,nch
+          if(icc(ich,ich).ne.0) Call UPDATE_HL(ich,ich,ns,ks,sb,1.d0)
+        End do
       end if
 
       if(exch_mode.eq.1) go to 2
@@ -303,10 +311,12 @@
       ! ... symmetrize the diagonal blokcs:
 
       Do ich = 1,nch
-       ij = icc(ich,ich); if(ij.eq.0) Cycle
-       Do i = 1,ns;  Do j = 1,i
-        C=hcc(i,j,ij)+hcc(j,i,ij);  hcc(i,j,ij)=C/2.d0;  hcc(j,i,ij)=C/2.d0
-       End do; End do
+        ij = icc(ich,ich); if(ij.eq.0) Cycle
+        Do i = 1,ns
+          Do j = 1,i
+            C=hcc(i,j,ij)+hcc(j,i,ij);  hcc(i,j,ij)=C/2.d0;  hcc(j,i,ij)=C/2.d0
+          End do
+        End do
       End do
 
       ! ... check big overlaps:
@@ -316,26 +326,29 @@
       ! ... redo overlap matrix:
 
       if(flag.gt.0) then
-       Call br_file
-       Call Check_orb_overlaps
-       Call Get_orth_chan
-       Call Allocate_matrix(i)
-       go to 1
+        Call br_file
+        Call Check_orb_overlaps
+        Call Get_orth_chan
+        Call Allocate_matrix(i)
+        go to 1
       end if
 
     2 Continue
 
       ! ... record overlap matrix:
 
-      if(myid.eq.0) then;   rewind(nuj);  write(nuj) ns,nch,npert;  end if
+      if(myid.eq.0) then
+        rewind(nuj)
+        write(nuj) ns,nch,npert
+      end if
 
-      Call Record_matrix(nuj)
+      Call Record_matrix_mpi(nuj)
 
       Call CPU_time(t2)
-      if(pri.gt.0) &
-      write(pri,'(/a,T20,f10.2,a)') 'Overlaps:',(t2-t1)/60,' min '
-      if(myid.eq.0) &
-      write(  *,'( a,T20,f10.2,a)') 'Overlaps:',(t2-t1)/60,' min '
+      if(myid.eq.0) then
+        write(pri,'(/a,T20,f10.2,a)') 'Overlaps:',(t2-t1)/60,' min '
+        write(  *,'( a,T20,f10.2,a)') 'Overlaps:',(t2-t1)/60,' min '
+      endif
 
       End Subroutine SUB1_overlaps
 
@@ -355,14 +368,17 @@
 
       Call CPU_time(t1)
 
-      Call Gen_Lval;  icase=6;  Call State_res;  Call Alloc_Lcore(0,0,0)
+      Call Gen_Lval
+      icase=6
+      Call State_res
+      Call Alloc_Lcore(0,0,0)
 
       Call CPU_time(t2)
 
-      if(pri.gt.0) &
-      write(pri,'(a,T20,f10.2,a)') 'L-integrals:',(t2-t1)/60,' min '
-      if(myid.eq.0) &
-      write(*  ,'(a,T20,f10.2,a)') 'L-integrals:',(t2-t1)/60,' min '
+      if(myid.eq.0) then
+        write(pri,'(a,T20,f10.2,a)') 'L-integrals:',(t2-t1)/60,' min '
+        write(*  ,'(a,T20,f10.2,a)') 'L-integrals:',(t2-t1)/60,' min '
+      endif
 
       End Subroutine SUB1_Lintegrals
 
@@ -382,16 +398,20 @@
 
       Call CPU_time(t1)
 
-      l = maxval(lbs); if(l.gt.mlso) l = mlso;  Call Gen_Zval(l)
+      l = maxval(lbs)
+      if(l.gt.mlso) l = mlso
+      Call Gen_Zval(l)
 
-      icase=7;  Call State_res;   Call Alloc_zcore(0,0)
+      icase=7
+      Call State_res
+      Call Alloc_zcore(0,0)
 
       Call CPU_time(t2)
 
-      if(pri.gt.0)  &
-      write(pri,'(a,T20,f10.2,a)') 'Z-integrals:',(t2-t1)/60,' min '
-      if(myid.eq.0) &
-      write(*  ,'(a,T20,f10.2,a)') 'Z-integrals:',(t2-t1)/60,' min '
+      if(myid.eq.0) then
+        write(pri,'(a,T20,f10.2,a)') 'Z-integrals:',(t2-t1)/60,' min '
+        write(*  ,'(a,T20,f10.2,a)') 'Z-integrals:',(t2-t1)/60,' min '
+      endif
 
       End Subroutine SUB1_Zintegrals
 
@@ -406,23 +426,25 @@
 
       Do icase = 3,10
 
-       if(intercase.gt.0.and.intercase.ne.icase) Cycle
+        if(intercase.gt.0.and.intercase.ne.icase) Cycle
 
-       Select case(icase)
-        case(6,7); Cycle
-        case(8,9); if(msoo.eq.-1.or.(mrel.lt.3.and.msoo.ne.1)) Cycle
-        case( 10); if(mss .eq.-1.or.(mrel.lt.4.and.mss .ne.1)) Cycle
-        case(3,4); if(moo .eq.-1.or.(mrel.lt.5.and.moo .ne.1)) Cycle
-       End Select
+        Select case(icase)
+          case(6,7); Cycle
+          case(8,9); if(msoo.eq.-1.or.(mrel.lt.3.and.msoo.ne.1)) Cycle
+          case( 10); if(mss .eq.-1.or.(mrel.lt.4.and.mss .ne.1)) Cycle
+          case(3,4); if(moo .eq.-1.or.(mrel.lt.5.and.moo .ne.1)) Cycle
+        End Select
 
        Call CPU_time(t1);   Call State_res;    Call CPU_time(t2)
 
-       if(pri.gt.0) &
-       write(pri,'(a,a,T20,f10.2,a)') Aint(icase),'-integrals:',(t2-t1)/60,' min '
-       if(myid.eq.0) &
-       write(*  ,'(a,a,T20,f10.2,a)') Aint(icase),'-integrals:',(t2-t1)/60,' min '
+      if(myid.eq.0) then
+        write(pri,'(a,a,T20,f10.2,a)') &
+          Aint(icase),'-integrals:',(t2-t1)/60,' min '
+        write(*  ,'(a,a,T20,f10.2,a)') &
+          Aint(icase),'-integrals:',(t2-t1)/60,' min '
+      endif
 
-       if(interrupt.gt.0) Return
+      if(interrupt.gt.0) Return
 
       End do  ! over icase
 
@@ -457,20 +479,26 @@
 
 ! ... re-write overlap matrix:
 
-      if(myid.eq.0) rewind(nui)
-      if(myid.eq.0) read(nui) i,j,k
+      if(myid.eq.0) then
+        rewind(nui)
+        read(nui) i,j,k
+      endif
       Call Read_matrix_mpi
 
-      if(myid.eq.0) rewind(nuj)
-      if(myid.eq.0) write(nuj) ns,nch,npert
-      Call Record_matrix(nuj)
+      if(myid.eq.0) then
+        rewind(nuj)
+        write(nuj) ns,nch,npert
+      endif
+      Call Record_matrix_mpi(nuj)
 
 ! ... Interaction matrix:
 
       Call Allocate_matrix(m)
       Call Read_matrix_mpi
-      if(myid.eq.0) read(nui) m
-      if(myid.eq.0) read(nui) ACF
+      if(myid.eq.0) then
+        read(nui) m
+        read(nui) ACF
+      endif
 
 ! ... Z-integrals:
 
@@ -479,20 +507,25 @@
 ! ... symmetrize the diagonal blocks:
 
       Do ich = 1,nch
-       ij = icc(ich,ich); if(ij.eq.0) Cycle
-       Do i = 1,ns;  Do j = 1,i
-        C=hcc(i,j,ij)+hcc(j,i,ij); hcc(i,j,ij)=C/2.d0; hcc(j,i,ij)=C/2.d0
-       End do; End do
+        ij = icc(ich,ich)
+        if(ij.eq.0) Cycle
+        Do i = 1,ns
+          Do j = 1,i
+            C=hcc(i,j,ij)+hcc(j,i,ij); hcc(i,j,ij)=C/2.d0; hcc(j,i,ij)=C/2.d0
+          End do
+        End do
       End do
 
 ! ... record interaction matrix:
 
-      Call Record_matrix(nuj)
+      Call Record_matrix_mpi(nuj)
 
 ! ... asymptotic coefficients:
 
-      if(myid.eq.0) write(nuj) mk
-      if(myid.eq.0) write(nuj) ACF
+      if(myid.eq.0) then
+        write(nuj) mk
+        write(nuj) ACF
+      endif
 
       close(nuj)
 

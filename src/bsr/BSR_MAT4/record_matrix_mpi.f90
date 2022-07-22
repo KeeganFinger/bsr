@@ -1,5 +1,5 @@
 !======================================================================
-      Subroutine Record_matrix(nu)
+      Subroutine Record_matrix_mpi(nu)
 !======================================================================
 !     collect and record of overlap matrix
 !----------------------------------------------------------------------
@@ -17,7 +17,7 @@
 ! ... channel-channal blocks:
 
       nn = ns * ns
-      Do ich = 1,nch; Do jch = 1,ich;  i=icc(ich,jch) 
+      Do ich = 1,nch; Do jch = 1,ich;  i=icc(ich,jch)
 
        if(myid.ne.0.and.i.ne.0) then
         vv = hcc(1:ns,1:ns,i)
@@ -43,7 +43,7 @@
 
 ! ... channel-perturber rows:
 
-       Do ich = 1,nch; Do ip = 1,npert; i = icb(ich,ip) 
+       Do ich = 1,nch; Do ip = 1,npert; i = icb(ich,ip)
        if(myid.ne.0.and.i.ne.0) &
          Call MPI_SEND(hcb(:,i),ns, MPI_DOUBLE_PRECISION, &
                       0, myid, MPI_COMM_WORLD, ierr)
@@ -82,5 +82,4 @@
 
       if(myid.eq.0) write(nu) -1,-1
 
-      End Subroutine Record_matrix
-
+    End Subroutine Record_matrix_mpi
