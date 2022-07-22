@@ -83,18 +83,13 @@
 
 ! ... log - file:
 
-      write(AF_p,'(a,i3.3)') 'br_',myid
-
-      if(debug.eq.0.and.myid.gt.0) pri=0
-      if(myid.gt.0.and.pri.gt.0) open(pri,file=AF_p)
-
-      if(pri.gt.0) then
-      write(pri,'(/20x,a/20x,a/20x,a/)') &
+      if(myid.eq.0) then
+        write(pri,'(/20x,a/20x,a/20x,a/)') &
              '=======================',     &
              ' B R E I T - P A U L I ',     &
              '======================='
-      write(pri,'(/a,i3)')     'Max.multipole index =',mk
-      write(pri,'(/a,E10.1/)') 'Tollerance for coeff.s =',eps_c
+        write(pri,'(/a,i3)')     'Max.multipole index =',mk
+        write(pri,'(/a,E10.1/)') 'Tollerance for coeff.s =',eps_c
       end if
 
 !----------------------------------------------------------------------
@@ -124,7 +119,10 @@
 
        Call MPI_BCAST(ne,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
  
-       if(myid.eq.0) then; Call Def_maxl(l);  mls_max=4*l+2; end if
+       if(myid.eq.0) then
+         Call Def_maxl(l)
+         mls_max=4*l+2
+       end if
 
        Call MPI_BCAST(mls_max,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
 
@@ -141,7 +139,7 @@
        Call MPI_BARRIER(MPI_COMM_WORLD, ierr)
 
        t2=MPI_WTIME()
-       if(pri.gt.0) &
+       if(myid.eq.0) &
        write(pri,'(/a,F12.2,a)') 'Prep_det is done:',(t2-t1)/60,' min'
 
        Call open_int_int

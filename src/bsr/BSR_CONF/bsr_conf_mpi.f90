@@ -113,7 +113,7 @@
       Use internal_file
 
       Implicit real(8) (A-H,O-Z)
-      Character(124) :: AS
+      Character(124) :: AS, ilsp_mpi, ich_mpi
       Integer :: status(MPI_STATUS_SIZE)
       Integer, external :: Iadd_line
 
@@ -400,48 +400,66 @@
       End do ! over partial waves (ilsp)
 
 ! ... Collect the information:
+      Call MPI_BARRIER(MPI_COMM_WORLD,ierr)
 
       if(myid.eq.0) then
         write(nut,'(72(''-''))')
         write(nut,'(a)') 'channels:'
-        write(nut,'(72(''+''))')
+        write(nut,'(72(''-''))')
       end if
 
       Call MPI_BARRIER(MPI_COMM_WORLD,ierr)
 
       ip = nlsp+kpert+1
       Do ilsp=1,nlsp
-        if(ip.gt.nlines) cycle
+        if(ip.gt.nlines.and.myid.ne.0) then
+          cycle
+        endif
 
         if(myid.ne.0) then
           AS = aline(ip)
           read(AS(1:3),*) klsp
           if(klsp.ne.ilsp) cycle
-          Call MPI_SEND(AS,124,MPI_CHARACTER,0,0,MPI_COMM_WORLD,ierr)
+          Call MPI_SSEND(AS,124,MPI_CHARACTER,0,ilsp,MPI_COMM_WORLD,ierr)
         endif
 
         if(myid.eq.0) then
-          Call MPI_RECV(AS,124, MPI_CHARACTER, MPI_ANY_SOURCE, &
-                       MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-          write(nut,'(a)') trim(AS)
+          if(modulo(ilsp,nprocs).eq.0) then
+            AS = aline(ip)
+            read(AS(1:3),*) klsp
+            if(klsp.ne.ilsp) cycle
+            write(nut, '(a)') trim(AS)
+          else
+            Call MPI_RECV(AS,124, MPI_CHARACTER, modulo(ilsp,nprocs), &
+                       ilsp, MPI_COMM_WORLD, status, ierr)
+            write(nut,'(a)') trim(AS)
+          endif
         end if
 
         read(AS,*) AF,AF,AF,AF,nch
 
         Do ich = 1,nch
-          if(myid.ne.0 .and. klsp.eq.ilsp) then
+          if(myid.ne.0) then
             AS = aline(ip+ich)
-            Call MPI_SEND(AS, 124, MPI_CHARACTER,0,0,MPI_COMM_WORLD, ierr)
+            Call MPI_SSEND(AS, 124, MPI_CHARACTER,0,ich,MPI_COMM_WORLD, ierr)
           end if
           if(myid.eq.0) then
-            Call MPI_RECV(AS, 124, MPI_CHARACTER, MPI_ANY_SOURCE, &
-                          MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-            write(nut,'(a)') trim(AS)
+            if(modulo(ilsp,nprocs).eq.0) then
+              write(nut,'(a)') trim(aline(ip+ich))
+            else
+              Call MPI_RECV(AS, 124, MPI_CHARACTER, modulo(ilsp,nprocs), &
+                          ich, MPI_COMM_WORLD, status, ierr)
+              write(nut,'(a)') trim(AS)
+            endif
           end if
         End do
 
         if(myid.eq.0) write(nut,'(72(''-''))')
-        ip = ip + 1 + nch
+        if(myid.ne.0) then
+          ip = ip + 1 + nch
+        else
+          if(modulo(ilsp,nprocs).eq.0) ip = ip + 1 + nch
+        endif
       End do
 
 !----------------------------------------------------------------------
