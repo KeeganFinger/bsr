@@ -1,5 +1,5 @@
 !======================================================================
-      Subroutine SUB1 
+      Subroutine SUB1_MPI
 !======================================================================
 !     drive routine for one partial wave
 !----------------------------------------------------------------------
@@ -11,7 +11,7 @@
 
       Implicit none
       Real(8) :: C,t1,t2
-      Integer :: i, ich, m
+      Integer :: i,j,m,mm,ich
       Integer, external :: Ifind_channel
 
 !-----------------------------------------------------------------------
@@ -23,30 +23,22 @@
 
       if(exch_mode.eq.2) Return
 
-      if(mode.eq.7) then;  Call Sub1_mso_mpi; Return; end if
-
-! ... debug output if any:
-
-      if(myid.ne.0) then
-       if(debug.ge.myid) then
-        write(AF_pri,'(a,i5.5)') 'debug.',myid
-        Open(pri,file=AF_pri)
-       else
-        pri = 0
-       end if
+      if(mode.eq.7) then
+        Call Sub1_mso_mpi
+        Return
       end if
 
-      if(pri.gt.0) then
-       write(pri,'(/a/  )') 'Main dimensions in bsr_matrix module:'
-       write(pri,'( a,i10,a)') 'nch    = ',nch,   '  -  number of channels '
-       write(pri,'( a,i10,a)') 'npert  = ',npert, '  -  number of perturbers '
-       write(pri,'( a,i10,a)') 'ns     = ',ns,    '  -  number of splines '
-       write(pri,'(/a,T33,i8)') 'Dimension of interaction matrix:',nch*ns+npert
+      if(myid.eq.0) then
+        write(pri,'(/a/  )') 'Main dimensions in bsr_matrix module:'
+        write(pri,'( a,i10,a)') 'nch    = ',nch,   '  -  number of channels '
+        write(pri,'( a,i10,a)') 'npert  = ',npert, '  -  number of perturbers '
+        write(pri,'( a,i10,a)') 'ns     = ',ns,    '  -  number of splines '
+        write(pri,'(/a,T33,i8)') 'Dimension of interaction matrix:',nch*ns+npert
       end if
 
       t2 = MPI_WTIME()
-      if(pri.gt.0) &
-      write(pri,'(/a,T20,f10.1,a)') 'Read_data:',(t2-t1)/60,' min '
+      if(myid.eq.0) write(pri,'(/a,T20,f10.1,a)') &
+        'Read_data:',(t2-t1)/60,' min '
 
 !----------------------------------------------------------------------
 ! ... broadcast the information:
@@ -66,19 +58,21 @@
 
       t2 = MPI_WTIME()
       if(pri.gt.0) &
-      write(pri,'(/a,T20,f10.1,a)') 'Broad_cast:  ',(t2-t1)/60,' min '
+      write(pri,'(/a,T20,f10.1,a)') 'Broadcast:  ',(t2-t1)/60,' min '
 
 !----------------------------------------------------------------------
 ! ... initialize arrays and check memory requirements:
 
       if(allocated(IP_channel)) Deallocate(IP_channel)
       Allocate(IP_channel(ncfg))
-      Do i=1,ncfg; IP_channel(i)=Ifind_channel(i); End do
+      Do i=1,ncfg
+        IP_channel(i)=Ifind_channel(i)
+      End do
 
       Call Allocate_ndets(-1)
       Call Allocate_ndefs(-1)
 
-      Call Memory_estimations
+      Call Memory_estimations(mm)
 
 !----------------------------------------------------------------------
 !                                                        overlap matrix:
@@ -189,7 +183,7 @@
 
 
 !======================================================================
-      Subroutine Memory_estimations
+      Subroutine Memory_estimations(mm)
 !======================================================================
       Use MPI
       Use bsr_mat
@@ -203,13 +197,13 @@
 
       mm = 0
 
-      if(pri.gt.0) write(pri,'(/a/)') 'Memory consuming:'
+      if(myid.eq.0) write(pri,'(/a/)') 'Memory consuming:'
 
 ! ... the < i | j > arrays:
 
       m = mem_orb_overlaps
-      if(pri.gt.0) &
-      write(pri,'(a,T33,f8.1,a)') 'Bound overlaps:', m*4.0/(1024*1024),'  Mb'
+      if(myid.eq.0) write(pri,'(a,T33,f8.1,a)') &
+        'Bound overlaps:', m*4.0/(1024*1024),'  Mb'
       mm = mm + m
 
 ! ... c_data arrays:
@@ -221,8 +215,8 @@
        write(pri,'(/a,i8,a)') 'nblock = ',nblock,'  -  number of blocks re-assigned !!! '
       end if
       Call Alloc_c_data(mtype,-1,npol,mblock,nblock,kblock,eps_c,m)
-      if(pri.gt.0) &
-      write(pri,'(a,T33,f8.1,a)')  'Memory for c_data:', m*4.0/(1024*1024),'  Mb'
+      if(myid.eq.0) write(pri,'(a,T33,f8.1,a)') &
+        'Memory for c_data:', m*4.0/(1024*1024),'  Mb'
       mm = mm + m
 
 ! ... buffer:
@@ -230,7 +224,8 @@
       if(.not.allocated(CBUF)) &
       Allocate(CBUF(maxnc),itb(maxnc),jtb(maxnc),intb(maxnc),idfb(maxnc))
       m = 6*maxnc
-      if(pri.gt.0) write(pri,'(a,T33,f8.1,a)') 'Buffer memory:', m*4.0/(1024*1024),'  Mb'
+      if(myid.eq.0) write(pri,'(a,T33,f8.1,a)') &
+        'Buffer memory:', m*4.0/(1024*1024),'  Mb'
       mm = mm + m
 
 ! ... splines:
