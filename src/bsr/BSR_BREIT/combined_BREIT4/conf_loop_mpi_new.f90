@@ -112,7 +112,7 @@
 
             Call Add_it_oper_mpi(is,js)
 
-            ! Call Send_det_exp(i,is,js)
+            Call Send_det_exp(i,is,js)
           end if
 
         End do    ! over jc
