@@ -48,16 +48,24 @@
       t1 = MPI_WTIME()
 
       Call br_symc_LS
+      print *, myid, 'symc'
       Call br_symt_LS
+      print *, myid, 'symt'
       Call br_conf_LS
+      print *, myid, 'conf'
       Call br_channel
+      print *, myid, 'chan'
       Call br_bsorb
+      print *, myid, 'bsorb'
       Call br_phys_orb
+      print *, myid, 'phys'
       Call br_dets
+      print *, myid, 'dets'
       Call br_ovl
+      print *, myid, 'ovl'
 
       t2 = MPI_WTIME()
-      if(pri.gt.0) &
+      if(myid.eq.0) &
       write(pri,'(/a,T20,f10.1,a)') 'Broadcast:  ',(t2-t1)/60,' min '
 
 !----------------------------------------------------------------------

@@ -15,9 +15,10 @@
       if(nphys_orb.eq.0) Return
 
       if(myid.ne.0) then
-       if(allocated(ip_tar)) Deallocate(ip_tar,ip_phy,ip_sub,S_orb,jp_sub)
-       Allocate(ip_tar(ntarg),ip_phy(nphys_orb),ip_sub(nphys_orb), &
-                S_orb(nphys_orb),jp_sub(nphys_orb),jp_tar(nphys_orb))       
+        if(allocated(ip_tar)) &
+          Deallocate(ip_tar,ip_phy,ip_sub,S_orb,jp_sub,jp_tar)
+        Allocate(ip_tar(ntarg),ip_phy(nphys_orb),ip_sub(nphys_orb), &
+                S_orb(nphys_orb),jp_sub(nphys_orb),jp_tar(nphys_orb))  
       end if
 
       Call MPI_BCAST(ip_tar,ntarg,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)

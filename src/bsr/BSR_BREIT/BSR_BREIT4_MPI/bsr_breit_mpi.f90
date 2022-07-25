@@ -201,11 +201,11 @@
       Use def_list
 
       Implicit none
-      Character AS*80
-      Integer :: i, ii, nc
+!      Character AS*80
+!      Integer :: i, ii, nc
       Real(8) :: adet,adef
-
-      close(nur)
+!
+!      close(nur)
 
       rewind(nub)
       Call Write_symc_LS(nub)
@@ -215,7 +215,7 @@
       adet=ldet;
       if(ndet.gt.0) adet=adet/ndet
       Call Write_det(nub)
-      adet=ldef;
+      adef=ldef;
       if(ndef.gt.0) adef=adef/ndef
       Call Write_def(nub)
 

@@ -17,22 +17,23 @@
 ! ... channel-channal blocks:
 
       nn = ns * ns
-      print *, 'shape(hcc)', shape(hcc)
+      print *, 'shape(hcc)', shape(hcc), ns
       Do ich = 1,nch
         Do jch = 1,ich
           i=icc(ich,jch)
+!          print *, 'loop', myid, i
 
           if(myid.ne.0.and.i.ne.0) then
-            print *, 'sending',myid, ich, jch
+!            print *, 'sending',myid, ich, jch
             vv = hcc(1:ns,1:ns,i)
             Call MPI_SEND(vv,nn, MPI_DOUBLE_PRECISION, &
                          0, i, MPI_COMM_WORLD, ierr)
           end if
 
-          if(myid.eq.0.and.i.ne.0) then
+          if(myid.eq.0) then
             print *, 'receiving',myid, ich, jch
             Call MPI_RECV(vv, nn, MPI_DOUBLE_PRECISION, MPI_ANY_SOURCE, &
-                        i, MPI_COMM_WORLD, status, ierr)
+                        MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
             S = SUM(abs(vv))
             if(S.ne.0.d0) then
               write(nu) ich,jch
@@ -53,11 +54,11 @@
         Do ip = 1,npert
           i = icb(ich,ip)
           if(myid.ne.0.and.i.ne.0) then
-            print *, 'sending',myid, ich, ip
+!            print *, 'sending',myid, ich, ip
             Call MPI_SEND(hcb(:,i),ns, MPI_DOUBLE_PRECISION, &
                     0, i, MPI_COMM_WORLD, ierr)
           endif
-          if(myid.eq.0.and.i.ne.0) then
+          if(myid.eq.0) then
             print *, 'receiving',myid, ich, ip
             Call MPI_RECV(v, ns, MPI_DOUBLE_PRECISION, MPI_ANY_SOURCE, &
                     i, MPI_COMM_WORLD, status, ierr)
@@ -77,13 +78,13 @@
         Do jp = 1,ip
           i = ibb(ip,jp)
           if(myid.ne.0.and.i.ne.0) then
-            print *, 'sending',myid, ip, jp
+!            print *, 'sending',myid, ip, jp
             Call MPI_SEND(hbb(i),1, MPI_DOUBLE_PRECISION, &
                         0, i, MPI_COMM_WORLD, ierr)
           endif
-          if(myid.eq.0.and.i.ne.0) then
+          if(myid.eq.0) then
             print *, 'receiving',myid, ip, jp
-            Call MPI_RECV(v, 1, MPI_DOUBLE_PRECISION, MPI_ANY_SOURCE, &
+            Call MPI_RECV(S, 1, MPI_DOUBLE_PRECISION, MPI_ANY_SOURCE, &
                          i, MPI_COMM_WORLD, status, ierr)
             if(S.ne.0.d0) then
               write(nu) ip+nch,jp+nch

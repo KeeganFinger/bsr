@@ -124,14 +124,14 @@
 
 ! ... print some main dimensions:
 
-       write(pri,'(/a/)') &
-          'Results for new angular symmetry calculations:'
-       write(pri,'(a,i10,f10.1)') &
-          'number of overlap determinants =', ndet,adet,ldet
-       write(pri,'(a,i10,f10.1)') &
-          'number of overlap factors      =', ndef,adef,ldef
-       write(pri,'(a,i10,f10.1)') &
-          'new ang. coeff.s               =', nc_new
+!       write(pri,'(/a/)') &
+!          'Results for new angular symmetry calculations:'
+!       write(pri,'(a,i10,f10.1)') &
+!          'number of overlap determinants =', ndet,ldet
+!       write(pri,'(a,i10,f10.1)') &
+!          'number of overlap factors      =', ndef,ldef
+!       write(pri,'(a,i10,f10.1)') &
+!          'new ang. coeff.s               =', nc_new
 
 ! ... time for one partial wave:
 
@@ -189,6 +189,15 @@
 
       adet=ldet; if(ndet.gt.0) adet=adet/ndet;    Call Write_det(nub)
       adef=ldef; if(ndef.gt.0) adef=adef/ndef;    Call Write_def(nub)
+
+      write(pri,'(/a/)') &
+          ' Results for new angular symmetry calculations:'
+      write(pri,'(a,i10,f10.1,i10)') &
+          ' number of overlap determinants =', ndet,adet,ldet
+      write(pri,'(a,i10,f10.1,i10)') &
+          ' number of overlap factors      =', ndef,adef,ldef
+      write(pri,'(a,i10)') &
+          ' new coeff.s                    =', nc_new
 
       close(nub)
       close(nur)
