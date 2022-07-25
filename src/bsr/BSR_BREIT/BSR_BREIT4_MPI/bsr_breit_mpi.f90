@@ -79,7 +79,8 @@
 !----------------------------------------------------------------------
 ! ... read arguments from command line:
 
-      if(myid.eq.0) Call Read_arg;    Call br_arg
+      if(myid.eq.0) Call Read_arg;
+      Call br_arg
 
 ! ... log - file:
 
@@ -130,11 +131,11 @@
 
 ! ... extract old results:
 
-       if(myid.eq.0)   Call Read_dets(nub,new)
+       if(myid.eq.0) Call Read_dets(nub,new)
 
 ! ... prepare det. expantions:
 
-       if(myid.eq.0)   Call open_det_exp
+       if(myid.eq.0) Call open_det_exp
 
        Call MPI_BARRIER(MPI_COMM_WORLD, ierr)
 
