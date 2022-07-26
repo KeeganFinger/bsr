@@ -90,13 +90,13 @@
         if(myid.eq.0) then
           write(pri,'(80(''-''))')
           write(pri,'(/a,i5)') 'Partial wave: ',klsp
-          (*  ,'(/a,i5)') 'Partial wave: ',klsp
+          write(*  ,'(/a,i5)') 'Partial wave: ',klsp
           Call open_c_file
           Call open_int_inf
           if(new.eq.1) then
             write(pri,'(/a)') 'It is new calculations'
           else
-            'It is continued calculations'
+            write(pri,'(/a)') 'It is continued calculations'
           endif
         endif
 
@@ -111,7 +111,7 @@
         if(myid.eq.0) then
           Call Read_dets(nub,new)
           Call def_maxl(l)
-          mls_max=4*l+s
+          mls_max=4*l+2
         endif
 
         Call MPI_BCAST(mls_max,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
@@ -138,7 +138,7 @@
           'Partial wave:',(t2-t1)/60,' min'
 
       enddo
-      Call MPI_FINALIZE()
+      Call MPI_FINALIZE(l)
       End
 
 !======================================================================
