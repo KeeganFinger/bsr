@@ -52,79 +52,202 @@
 !
 !---------------------------------------------------------------------
       Use MPI
-
       Use bsr_breit
-      USE conf_LS,      only: ne
-      Use symc_list_LS, only: nsymc
-      Use term_exp,     only: ic_case
+      Use conf_LS,      only: ne
+      Use det_list,     only: ndet,ldet
+      Use def_list,     only: ndef,ldef
 
       Implicit none
-      Integer :: l,mls_max
-
-!----------------------------------------------------------------------
-! ... initialize MPI:
+      Integer :: i,ii,l,ml
+      Real(8) :: tt1,tt2, ttt, total_time
 
       Call MPI_INIT(ierr)
       Call MPI_COMM_RANK(MPI_COMM_WORLD, myid, ierr)
       Call MPI_COMM_SIZE(MPI_COMM_WORLD, nprocs, ierr)
 
-      t0 = MPI_WTIME()
       if(myid.eq.0) then
-       open(pri,file=AF_p)
-       write(*,'(a,i6)') 'nprocs = ', nprocs
-       write(pri,'(a,i6)') 'nprocs = ', nprocs
-       Allocate(ip_proc(nprocs)); ip_proc=0
+        open(pri,file=AF_p)
+        write(*,'(a,i6)') 'nprocs = ', nprocs
+        write(pri,'(a,i6)') 'nprocs = ', nprocs
+        Allocate(proc_status(nprocs)); proc_status=0
       end if
 
-!----------------------------------------------------------------------
-! ... read arguments from command line:
-
-      if(myid.eq.0) Call Read_arg;
+! ... Read and broadcast command line arguments
+      if(myid.eq.0) then
+        Open(pri,file=AF_p)
+        write(pri,'(/20x,a/20x,a/20x,a/)') &
+               '=====================================',     &
+               ' CALCULATION OF ANGULAR COEFFICIENTS ',     &
+               '====================================='
+        Call Read_arg
+      endif
       Call br_arg
 
-      do klsp=klsp1,klsp2
+      total_time = 0.0d0
+      Do klsp = klsp1, klsp2
+        tt1 = MPI_WTIME()
 
         if(myid.eq.0) then
+          write(pri,'(80(''-''))')
           write(pri,'(/a,i5)') 'Partial wave: ',klsp
+          (*  ,'(/a,i5)') 'Partial wave: ',klsp
           Call open_c_file
           Call open_int_inf
-          if(new.eq.1) write(pri,'(/a)') 'It is new calculations '
-          if(new.eq.0) write(pri,'(/a)') 'It is continued calculations '
-          Call Read_conf
+          if(new.eq.1) then
+            write(pri,'(/a)') 'It is new calculations'
+          else
+            'It is continued calculations'
+          endif
         endif
 
+! ... Read configuration list
+        if(myid.eq.0) Call read_conf
+
+        Call MPI_BCAST(ne,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
         Call MPI_BCAST(icalc,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
         if(icalc.eq.0) cycle
 
-        if(myid.eq.0) Call Read_dets(nub,new)
-
+! ... Extract old results
         if(myid.eq.0) then
+          Call Read_dets(nub,new)
           Call def_maxl(l)
-          mls_max=4*l+2
+          mls_max=4*l+s
         endif
 
         Call MPI_BCAST(mls_max,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-        Call MPI_BCAST(ne,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+
         Call Alloc_spin_orbitals(ne,mls_max)
+
+! ... Prepare det expansions
 
         if(myid.eq.0) then
           Call open_det_exp
           Call open_int_int
         endif
 
+! ... Calculate angular symmetry coefficients
         Call MPI_BARRIER(MPI_COMM_WORLD,ierr)
+        if(myid.eq.0) Call conf_loop_MPI
+        if(myid.ne.0) Call conf_calc_MPI
 
-        if(myid.eq.0) Call Conf_loop_mpi
-        if(myid.ne.0) Call Conf_calc_mpi
-
-        if(myid.eq.0) Call Record_results
+! ... Record results and runtime data
+        if(myid.eq.0) Call record_results
 
         t2=MPI_WTIME()
         if(myid.eq.0) write(pri,'(/a,F12.2,a)') &
-          ' Partial wave:',(t2-t0)/60,' min'
+          'Partial wave:',(t2-t1)/60,' min'
 
-      enddo !klsp
+      enddo
+      Call MPI_FINALIZE()
+      End
 
-      Call MPI_FINALIZE(l)
+!======================================================================
+      Subroutine Read_dets(nub,new)
+!======================================================================
+      Implicit none
 
-      END 
+      Integer :: nub, new
+
+      if(new.eq.1) then
+       Call Alloc_det(-1)
+       Call Alloc_def(-1)
+      else
+       Call Load_det(nub)
+       Call Load_def(nub)
+      end if
+
+      End Subroutine Read_dets
+
+
+!======================================================================
+      Subroutine Record_results
+!======================================================================
+      Use bsr_breit
+      Use det_list
+      Use def_list
+
+      Implicit none
+
+      rewind(nub)
+      Call Write_symc_LS(nub)
+      Call Write_symt_LS(nub)
+      Call Record_oper_LS(nub)
+
+      adet=ldet;
+      if(ndet.gt.0) adet=adet/ndet
+      Call Write_det(nub)
+      adef=ldef;
+      if(ndef.gt.0) adef=adef/ndef
+      Call Write_def(nub)
+
+      close(nub)
+
+! ... print the main dimensions:
+
+      write(pri,'(/a/)') &
+          ' Results for new angular symmetry calculations:'
+      write(pri,'(a,i10,f10.1,i10)') &
+          ' number of overlap determinants =', ndet,adet,ldet
+      write(pri,'(a,i10,f10.1,i10)') &
+          ' number of overlap factors      =', ndef,adef,ldef
+      write(pri,'(a,i10)') &
+          ' new coeff.s                    =', nc_new
+
+
+      End Subroutine Record_results
+
+
+!======================================================================
+      Subroutine Debug_printing
+!======================================================================
+      Use MPI
+
+      Use bsr_breit
+      Use coef_list
+      Use zoef_list
+      Use boef_list
+
+      Integer :: nn, mt, nreloc, mreloc
+      Real(8) :: mem, meb
+
+      if(pri.gt.0) write(pri,'(/a/)') 'debug printing:'
+
+      Call MPI_REDUCE(mem_max_zoef,mem,1,MPI_DOUBLE_PRECISION,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+      Call MPI_REDUCE(max_zoef,nn,1,MPI_integer,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+      Call MPI_REDUCE(zoef_realloc,nreloc,1,MPI_integer,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+
+      if(pri.gt.0) then
+       write(pri,'(a,f10.1)') 'mem_zoef = ', mem
+       write(pri,'(a,2i10)')  'max_zoef = ', nn, izoef
+       write(pri,'(a,i10/)')  'max_zoef = ', nreloc
+      end if
+
+      Call MPI_REDUCE(mem_max_coef,mem,   1,MPI_DOUBLE_PRECISION,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+      Call MPI_REDUCE(max_coef,    nn,    1,MPI_integer,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+      Call MPI_REDUCE(max_term,    nt,    1,MPI_integer,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+      Call MPI_REDUCE(coef_realloc,nreloc,1,MPI_integer,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+
+      if(pri.gt.0) then
+       write(pri,'(a,f10.1)') 'mem_coef = ', mem
+       write(pri,'(a,2i10)')  'max_coef = ', nn, icoef
+       write(pri,'(a,2i10)')  'max_term = ', nt
+       write(pri,'(a,i10/)')  'realloc  = ', nreloc
+      end if
+
+      Call MPI_REDUCE(mem_max_boef,mem,   1,MPI_DOUBLE_PRECISION,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+      Call MPI_REDUCE(mem_max_blk, meb,   1,MPI_DOUBLE_PRECISION,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+      Call MPI_REDUCE(max_boef,    nn,    1,MPI_integer,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+      Call MPI_REDUCE(max_blk,     nt,    1,MPI_integer,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+      Call MPI_REDUCE(boef_realloc,nreloc,1,MPI_integer,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+      Call MPI_REDUCE(blk_realloc, mreloc,1,MPI_integer,MPI_MAX,0,MPI_COMM_WORLD,ierr)
+
+      if(pri.gt.0) then
+       write(pri,'(a,f10.1)') 'mem_boef = ', mem
+       write(pri,'(a,f10.1)') 'mem_blk  = ', meb
+       write(pri,'(a,2i10)')  'max_boef = ', nn, iboef
+       write(pri,'(a,2i10)')  'max_blk  = ', nt
+       write(pri,'(a,i10/)')  'al_boef  = ', nreloc
+       write(pri,'(a,i10/)')  'al_blk   = ', mreloc
+      end if
+
+      End Subroutine Debug_printing

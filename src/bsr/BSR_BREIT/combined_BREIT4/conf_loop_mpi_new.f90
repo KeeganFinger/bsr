@@ -3,130 +3,135 @@
 !=======================================================================
 !     run loop over configurations
 !-----------------------------------------------------------------------
+      Use MPI
       Use bsr_breit
-      Use spin_orbitals, only: Lsym1,Msym1,Ssym1,NNsym1, &
-                               Lsym2,Msym2,Ssym2,NNsym2
-      Use term_exp,      only: kt1,kt2, IP_kt1,IP_kt2, &
-                               kd1,kd2, kdt1, kdt2, C_det1, C_det2, &
-                               IM_det1,IM_det2, IS_det1,IS_det2, &
-                               ILT1,ILT2, IST1,IST2, MLT,MST, ic_case
+      Use spin_orbitals, only: NNsym1, Lsym1, &
+                               NNsym2, Lsym2
+      Use term_exp,      only: kt1, kdt1, ILT1, IST1, MLT, MST, &
+                               IP_kt1, C_det1, IM_det1, IS_det1, &
+                               kt2, kdt2, ILT2, IST2, &
+                               IP_kt1, C_det1, IM_det1, IS_det1
       Use conf_LS,       only: ne
-      Use symc_list_LS,  only: JC_need, IC_need, nsymc
-      Use coef_list,     only: ntrm,ctrm, ncoef
-      Use zoef_list,     only: nzoef
+      Use symc_list_LS,  only: IC_need, JC_need
+      Use coef_list,     only: ntrm
 
       Implicit none
-      Integer :: k1,k2, it,jt, MLT2,MST2, i,m,k, is,js,ic,jc
-      Real(8) :: C_ee,C_so,C_ss, zero=0.d0, one=1.d0
       Integer, external :: IDEF_cme
       Real(8), external :: Z_3j
-      Integer(8) :: ij
       Integer(8), external :: DEF_ij8
-      Character(80) :: conf
+      Integer :: MLT2, MST2
+      Integer :: is, js, k1, k2, proc ! iterators
+      Integer :: ic, jc ! indexes
+      Integer :: send ! MPI communicator
 
-!----------------------------------------------------------------------
-! ... cycle 1 over configurations:
-      t1=MPI_WTIME()
+
+! ... Outer loop over configurations
+
       rewind(nud)
-      Do is=1,ic_case
-        Read(nud) ic,kt1,kdt1,ILT1,IST1,MLT,MST
+      do is=1,ic_case
+
+        read(nud) ic,kt1,kdt1,ILT1,IST1,MLT,MST
 
         if(Allocated(IP_kt1)) Deallocate(IP_kt1)
-        Allocate(IP_kt1(kt1)); Read(nud) IP_kt1
+        Allocate(IP_kt1(kt1))
+        Read(nud) IP_kt1
 
         if(Allocated(C_det1)) Deallocate(C_det1)
-        Allocate(C_det1(kt1,kdt1)); Read(nud) C_det1
+        Allocate(C_det1(kt1,kdt1))
+        Read(nud) C_det1
 
         if(Allocated(IM_det1)) Deallocate(IM_det1)
-        Allocate(IM_det1(ne,kdt1)); Read(nud) IM_det1
+        Allocate(IM_det1(ne,kdt1))
+        Read(nud) IM_det1
 
         if(Allocated(IS_det1)) Deallocate(IS_det1)
-        Allocate(IS_det1(ne,kdt1)); Read(nud) IS_det1
+        Allocate(IS_det1(ne,kdt1))
+        Read(nud) IS_det1
 
         read(nud) NNsym1(1:ne)
         read(nud) Lsym1(1:ne)
 
         if(IC_need(ic).eq.0) Cycle
 
-        Call CPU_TIME(t1)
+        t1 = MPI_WTIME()
 
-        Call Alloc_boef(-1)
-        Call Alloc_blk(-1)
-
+! ... Inner loop over configurations
         rewind(nud)
-        Do js=1,is
+        do js=1,is
 
           Read(nud) jc,kt2,kdt2,ILT2,IST2,MLT2,MST2
 
           if(Allocated(IP_kt2)) Deallocate(IP_kt2)
-          Allocate(IP_kt2(kt2)); Read(nud) IP_kt2
+          Allocate(IP_kt2(kt2))
+          Read(nud) IP_kt2
 
           if(Allocated(C_det2)) Deallocate(C_det2)
-          Allocate(C_det2(kt2,kdt2)); Read(nud) C_det2
+          Allocate(C_det2(kt2,kdt2))
+          Read(nud) C_det2
 
           if(Allocated(IM_det2)) Deallocate(IM_det2)
-          Allocate(IM_det2(ne,kdt2)); Read(nud) IM_det2
+          Allocate(IM_det2(ne,kdt2))
+          Read(nud) IM_det2
 
           if(Allocated(IS_det2)) Deallocate(IS_det2)
-          Allocate(IS_det2(ne,kdt2)); Read(nud) IS_det2
+          Allocate(IS_det2(ne,kdt2))
+          Read(nud) IS_det2
 
           read(nud) NNsym2(1:ne)
           read(nud) Lsym2(1:ne)
 
           if(MLT2.ne.MLT.or.MST2.ne.MST) Cycle
           if(MLT.ne.min(ILT1,ILT2).or.MST.ne.min(IST1,IST2)) Cycle
-          ij=DEF_ij8(ic,jc);  if(JC_need(ij).eq.0) Cycle
+          ij=DEF_ij8(ic,jc)
+          if(JC_need(ij).eq.0) Cycle
 
-!----------------------------------------------------------------------
-! ...  define number of terms:
-
+! ... Define number of terms
           ntrm = 0
-          Do k1=1,kt1; it=IP_kt1(k1)
-            Do k2=1,kt2; jt=IP_kt2(k2)
+          Do k1=1,kt1
+            it=IP_kt1(k1)
+            Do k2=1,kt2
+              jt=IP_kt2(k2)
               if(is.eq.js.and.it.gt.jt) Cycle
               ntrm = ntrm + 1
             End do
           End do
 
-!----------------------------------------------------------------------
-! ...  joper and JT_oper:
-
+! ... Setup operators
           if(allocated(JT_oper)) Deallocate(JT_oper,CT_oper)
           Allocate(JT_oper(ntrm,noper),CT_oper(ntrm,noper))
           if(IDEF_cme(is,js).eq.0) Cycle
 
-!----------------------------------------------------------------------
-! ...  calculations:
+! ... Begin calculations
 
-          Do i=1,nprocs-1
-            if(ip_proc(i).ne.0) Cycle
-            Call Send_det_exp(i,is,js)
-            met = i
-            ip_proc(i) = 1
-            exit
-          End do
+          send = 0
+          do proc=1,nprocs-1
+            if(proc_status(proc).ne.0) cycle !skip if process proc is busy
+            Call send_data_MPI(proc,ic,jc)
+            proc_status(proc) = 1 !set process proc status to busy
+            send = 1 !sent data, so don't receive yet
+            exit !exit loop if data sent to a process
+          enddo
 
-          if(met.eq.0) then
-            Call Get_res(i,is,js)
-            Call Add_res_mpi(nur,is,js)
+          ! receive data if no processes available
+          if(send.eq.0) then
+            Call receive_results_MPI(proc,ic,jc)
+            Call add_res(nur,is,js)
+            Call add_it_oper(is,js)
+          endif
 
-            Call Add_it_oper_mpi(is,js)
+        enddo ! end inner configuration loop
 
-            Call Send_det_exp(i,is,js)
-          end if
+        t2 = MPI_WTIME()
 
-        End do    ! over jc
+        Call Symc_conf(ic, conf)
 
-        t2=MPI_WTIME()
+        write(pri,'(a,i6,a,i6,a,i6,a,i6,F10.2,a,3x,a)') &
+          ' is=',is,'/',ic_case,'  nterm=',kt1,'  ndet=', kdt1, &
+          t2-t1,' sec.',trim(conf)
+        write(*  ,'(a,i6,a,i6,a,i6,a,i6,F10.2,a,3x,a)') &
+          ' is=',is,'/',ic_case,'  nterm=',kt1,'  ndet=', kdt1, &
+          t2-t1,' sec.',trim(conf)
 
-        write(*,'(a,4i8,2f10.2,a,5x,a)') 'ic,ic_total,kt,kdt', iis,ic_case,kt1,kdt1, &
-          (t2-t3)/60, (t2-t0)/60, ' min.', conf_is(iis)
+      enddo ! end outer configuration loop
 
-! ... release processes
-        Do i=1,nprocs-1
-          Call Send_det_exp(i,-1,-1)
-        End do
-
-      End do    ! over ic
-
-      End Subroutine Conf_loop_mpi
+      End Subroutine conf_loop_MPI
