@@ -377,10 +377,10 @@
 
         ncfg_sct=ncfg; lcfg_sct=lcfg; nwf_sct=nwf
 
-        Do ic=ncfg_targ+1,ncfg
-          Call Pri_conf(nuc,ic,WC(ic))
-        End do
-        write(nuc,'(a)') '*'
+        ! Do ic=ncfg_targ+1,ncfg
+        !   Call Pri_conf(nuc,ic,WC(ic))
+        ! End do
+        ! write(nuc,'(a)') '*'
 
 ! ... add pertuber physical configurations:
 

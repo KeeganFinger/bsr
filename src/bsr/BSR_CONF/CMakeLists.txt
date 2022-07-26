@@ -25,7 +25,6 @@ if(MPI_Fortran_FOUND)
  add_executable(bsr_conf_mpi
    ${BSR_CONF_COMMON_SOURCES}
    bsr_conf_mpi.f90
-   br_arg.f90
-   read_orth.f90)
+   br_arg.f90)
  target_link_libraries(bsr_conf_mpi bsr_mpi zconfls zcom shells MPI::MPI_Fortran)
 endif()
