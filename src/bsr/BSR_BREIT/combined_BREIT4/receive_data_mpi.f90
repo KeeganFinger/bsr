@@ -2,7 +2,7 @@
       Subroutine receive_data_MPI(ic, jc)
 !======================================================================
       Use MPI
-      Use bsr_breit,     only: ierr, noper, joper, JT_oper, CT_oper
+      Use bsr_breit,     only: ierr, noper, joper, JT_oper, CT_oper,myid
       Use conf_LS,       only: ne
       Use coef_list,     only: ntrm
       Use spin_orbitals, only: NNsym1, NNsym2, Lsym1, Lsym2
@@ -16,12 +16,13 @@
       Implicit none
       Integer, intent(out) :: ic, jc
       Integer :: status(MPI_STATUS_SIZE)
-
+      
 ! ... Receive base info
       Call MPI_RECV(ic,1,MPI_INTEGER,0,0,MPI_COMM_WORLD,status,ierr)
       if(ic.le.0) Return ! ic controls looping/kill processes
 
       Call MPI_RECV(jc,1,MPI_INTEGER,0,1,MPI_COMM_WORLD,status,ierr)
+      print *, myid, 'receiving data', ic, jc
       Call MPI_RECV(ntrm,1,MPI_INTEGER,0,2,MPI_COMM_WORLD,status,ierr)
       Call MPI_RECV(joper,noper,MPI_INTEGER,0,3,MPI_COMM_WORLD, status,ierr)
       if(allocated(JT_oper)) Deallocate(JT_oper)

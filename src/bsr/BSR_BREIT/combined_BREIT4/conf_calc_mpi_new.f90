@@ -8,7 +8,7 @@
       Use term_exp,      only: kdt1, ILT1, IST1, MLT, MST, &
                                kdt2, ILT2, IST2, &
                                IM_det1, IS_det1, &
-                               IM_det2, IS_det2
+                               IM_det2, IS_det2, kt1
       Use conf_LS,       only: ne
       Use zoef_list,     only: nzoef
 
@@ -25,6 +25,7 @@
 
 1     Call receive_data_MPI(is,js)
       if(is.lt.0) return
+      print *, myid,'conf_calc', is, js, kt1
 
 ! ... Define normalization constants for different operators
       C_so = zero
@@ -88,6 +89,7 @@
         endif
       enddo ! loop over kd1
 
+      print *, myid,'conf_calc2', is, js, kt1
       Call send_results_MPI(is,js)
       go to 1
 

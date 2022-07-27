@@ -18,6 +18,7 @@
       process = status(MPI_SOURCE)
       Call MPI_RECV(jc,1,MPI_INTEGER,MPI_ANY_SOURCE,1,&
                     MPI_COMM_WORLD,status,ierr)
+      print *, myid, 'receiving results', ic, jc, 'from', process
       Call MPI_RECV(ncoef,1,MPI_INTEGER,MPI_ANY_SOURCE,2,&
                     MPI_COMM_WORLD,status,ierr)
       Call MPI_RECV(ntrm,1,MPI_INTEGER,MPI_ANY_SOURCE,3,&

@@ -22,6 +22,7 @@ if(MPI_Fortran_FOUND)
     send_results_mpi.f90
     receive_data_mpi.f90
     receive_results_mpi.f90
+    cache_data.f90
     )
   target_link_libraries(bsr_breit4_mpi zconfls shells zcom MPI::MPI_Fortran)
 endif()
