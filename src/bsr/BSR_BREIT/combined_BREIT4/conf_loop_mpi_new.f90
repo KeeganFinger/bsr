@@ -9,8 +9,8 @@
                                NNsym2, Lsym2
       Use term_exp,      only: kt1, kdt1, ILT1, IST1, MLT, MST, &
                                IP_kt1, C_det1, IM_det1, IS_det1, &
-                               kt2, kdt2, ILT2, IST2, &
-                               IP_kt1, C_det1, IM_det1, IS_det1
+                               kt2, kdt2, ILT2, IST2, ic_case,&
+                               IP_kt2, C_det2, IM_det2, IS_det2
       Use conf_LS,       only: ne
       Use symc_list_LS,  only: IC_need, JC_need
       Use coef_list,     only: ntrm
@@ -19,10 +19,12 @@
       Integer, external :: IDEF_cme
       Real(8), external :: Z_3j
       Integer(8), external :: DEF_ij8
-      Integer :: MLT2, MST2
-      Integer :: is, js, k1, k2, proc ! iterators
+      Integer :: MLT2, MST2, ij
+      Integer :: is, js, k1, k2, it, jt, proc ! iterators
       Integer :: ic, jc ! indexes
-      Integer :: send ! MPI communicator
+      Integer :: send, is_rec, js_rec ! MPI communicator
+      Character(80) :: conf
+      
 
 
 ! ... Outer loop over configurations
@@ -106,7 +108,7 @@
           send = 0
           do proc=1,nprocs-1
             if(proc_status(proc).ne.0) cycle !skip if process proc is busy
-            Call send_data_MPI(proc,ic,jc)
+            Call send_data_MPI(proc,is,js)
             proc_status(proc) = 1 !set process proc status to busy
             send = 1 !sent data, so don't receive yet
             exit !exit loop if data sent to a process
@@ -114,9 +116,10 @@
 
           ! receive data if no processes available
           if(send.eq.0) then
-            Call receive_results_MPI(proc,ic,jc)
-            Call add_res(nur,is,js)
-            Call add_it_oper(is,js)
+            Call receive_results_MPI(proc,is_rec,js_rec)
+            Call add_res(nur,is_rec,js_rec)
+            Call add_it_oper(is_rec,js_rec)
+            proc_status(proc) = 0
           endif
 
         enddo ! end inner configuration loop
@@ -133,5 +136,11 @@
           t2-t1,' sec.',trim(conf)
 
       enddo ! end outer configuration loop
+
+! ... Release processes from calculations
+
+      do proc=1,nprocs-1
+        Call send_data_MPI(proc,-1,-1)
+      enddo
 
       End Subroutine conf_loop_MPI

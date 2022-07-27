@@ -9,7 +9,8 @@
       Use ndef_list,      only: ndef, ldef, KPF, IPF, NPF
 
       Implicit none
-      Integer, intent(out) :: process, jc, ic, status(MPI_STATUS_SIZE)
+      Integer, intent(out) :: process, ic, jc
+      Integer :: status(MPI_STATUS_SIZE)
 
 ! ... Receive base info
       Call MPI_RECV(ic,1,MPI_INTEGER,MPI_ANY_SOURCE,MPI_ANY_TAG,&
@@ -38,7 +39,7 @@
       Call MPI_RECV(kt2,1,MPI_INTEGER,MPI_ANY_SOURCE,MPI_ANY_TAG,&
                     MPI_COMM_WORLD,status,ierr)
       if(allocated(IP_kt2)) Deallocate(IP_kt2)
-      Allocate(IP_kt1(kt2))
+      Allocate(IP_kt2(kt2))
       Call MPI_RECV(IP_kt2,kt2,MPI_INTEGER,MPI_ANY_SOURCE,MPI_ANY_TAG,&
                     MPI_COMM_WORLD,status,ierr)
 
@@ -53,7 +54,7 @@
                     MPI_COMM_WORLD,status,ierr)
       if(allocated(coef)) Deallocate(coef)
       Allocate(coef(ntrm,ncoef))
-      Call MPI_RECV(coef,ntrm*ncoef,MPI_INTEGER,MPI_ANY_SOURCE,MPI_ANY_TAG,&
+      Call MPI_RECV(coef,ntrm*ncoef,MPI_DOUBLE_PRECISION,MPI_ANY_SOURCE,MPI_ANY_TAG,&
                     MPI_COMM_WORLD,status,ierr)
 
 ! ... Receive det info

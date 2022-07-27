@@ -1,5 +1,5 @@
 !======================================================================
-      Subroutine send_results_MPI(ic,jc)
+      Subroutine send_results_MPI(ic, jc)
 !======================================================================
       Use MPI
       Use bsr_breit,      only: myid, ierr, noper, joper, JT_oper
@@ -9,7 +9,7 @@
       Use ndef_list,      only: ndef, ldef, KPF, IPF, NPF
 
       Implicit none
-      Integer, intent(in) :: jc, ic
+      Integer, intent(in) :: ic, jc
 
 ! ... Send base info
       Call MPI_SEND(ic,1,MPI_INTEGER,0,myid,MPI_COMM_WORLD,ierr)
@@ -29,7 +29,7 @@
 ! ... Send coefficient info
       Call MPI_SEND(idfc,ncoef,MPI_INTEGER,0,myid,MPI_COMM_WORLD,ierr)
       Call MPI_SEND(intc,ncoef,MPI_INTEGER,0,myid,MPI_COMM_WORLD,ierr)
-      Call MPI_SEND(coef,ntrm*ncoef,1,MPI_INTEGER,0,myid,MPI_COMM_WORLD,ierr)
+      Call MPI_SEND(coef,ntrm*ncoef,MPI_DOUBLE_PRECISION,0,myid,MPI_COMM_WORLD,ierr)
 
 ! ... Send det info
       Call MPI_SEND(ndet,1,MPI_INTEGER,0,myid,MPI_COMM_WORLD,ierr)

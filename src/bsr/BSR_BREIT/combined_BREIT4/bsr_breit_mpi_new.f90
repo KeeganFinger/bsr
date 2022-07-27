@@ -58,7 +58,7 @@
       Use def_list,     only: ndef,ldef
 
       Implicit none
-      Integer :: i,ii,l,ml
+      Integer :: i,ii,l,ml,mls_max
       Real(8) :: tt1,tt2, ttt, total_time
 
       Call MPI_INIT(ierr)

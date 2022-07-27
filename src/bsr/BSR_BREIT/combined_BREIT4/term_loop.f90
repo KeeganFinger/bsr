@@ -6,7 +6,7 @@
 !     Check also if the specific coefficient is needed to be added
 !     to the bank.
 !----------------------------------------------------------------------
-      Use bsr_breit, only: eps_c
+      Use bsr_breit, only: eps_c, myid
       Use conf_LS,   only: joper, noper, CT_oper, JT_oper, coper
       Use zoef_list, only: nzoef, zoef, iz_int, iz_df 
       Use coef_list, only: ntrm,ctrm,int,idf
@@ -26,7 +26,6 @@
 !         if(is.eq.js.and.kd2.ne.kd1) ctrm(k) = ctrm(k) + C_det1(k2,kd1)*C_det2(k1,kd2)    ???    
         End do; End do 
 
- 
         CT_oper = 0.d0
         Do i = 1,noper
          if(joper(i).eq.0) Cycle
@@ -35,7 +34,6 @@
          End do
         End do
 
-      
       Do i=1,nzoef
        C = Zoef(i); if(abs(C).lt.EPS_c) Cycle
        int = IZ_int(i); idf = IZ_df(i);  Call Decode_met(m,int)

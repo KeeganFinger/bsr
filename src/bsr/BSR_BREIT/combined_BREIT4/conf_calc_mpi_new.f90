@@ -14,14 +14,17 @@
 
       Implicit none
       Real(8), parameter :: zero=0.d0, one=1.d0
+      Real(8) :: C_ee, C_so, C_ss !normalization factors
+      Real(8), external :: Z_3j
       Integer :: kd1, kd2 !iterators
-      Integer :: ic, jc !indexes
+      Integer :: is, js !indexes
 
 ! ... Prepare to receive data
       Call Alloc_boef(-1)
       Call Alloc_blk (-1)
 
-1     Call receive_data_MPI(ic,jc)
+1     Call receive_data_MPI(is,js)
+      if(is.lt.0) return
 
 ! ... Define normalization constants for different operators
       C_so = zero
@@ -43,7 +46,11 @@
       C_ee = one
       if(ILT1.ne.ILT2.or.IST1.ne.IST2) C_ee = zero
 
-      if(abs(C_ee)+abs(C_so)+abs(C_ss).eq.zero) Cycle
+      if(abs(C_ee)+abs(C_so)+abs(C_ss).eq.zero) then
+        Call send_results_mpi(is,js)
+        go to 1
+      endif
+
 
       coper = zero
       if(joper(1).gt.0) coper(1) = C_ee
@@ -70,17 +77,18 @@
 
           nzoef = 0
           Call Det_orbitals2
-          if(nzoef.gt.0) Call Term_loop(ic,jc)
+          if(nzoef.gt.0) Call Term_loop(is,js)
+          
         enddo ! loop over kd2
 
         t3 = MPI_WTIME()
         if(time_limit.gt.0.d0.and.(t3-t0)/60.gt.time_limit*1.1) then
-          Call send_results_MPI(-1*ic,jc)
+          Call send_results_MPI(-1*is,js)
           go to 1
         endif
       enddo ! loop over kd1
 
-      Call send_results_MPI(ic,jc)
+      Call send_results_MPI(is,js)
       go to 1
 
       End Subroutine Conf_calc_MPI
