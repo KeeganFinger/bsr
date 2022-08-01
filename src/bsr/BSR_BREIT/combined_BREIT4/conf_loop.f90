@@ -1,7 +1,7 @@
 !=======================================================================
       Subroutine Conf_loop
 !=======================================================================
-!     run loop over configurations 
+!     run loop over configurations
 !-----------------------------------------------------------------------
       Use bsr_breit
       Use spin_orbitals, only: Lsym1,Msym1,Ssym1,NNsym1, &
@@ -18,9 +18,9 @@
       Use ndet_list,     only: KPD,IPD,NPD,JPD,ndet,ldet
       Use ndef_list,     only: KPF,IPF,NPF,JPF,ndef,ldef
 
-      Implicit none 
+      Implicit none
       Integer :: k1,k2, it,jt, MLT2,MST2, i,m,k, is,js,ic,jc
-      Real(8) :: C_ee,C_so,C_ss, zero=0.d0, one=1.d0  
+      Real(8) :: C_ee,C_so,C_ss, zero=0.d0, one=1.d0
       Integer, external :: IDEF_cme
       Real(8), external :: Z_3j
       Integer(8) :: ij
@@ -82,49 +82,49 @@
 
        if(MLT2.ne.MLT.or.MST2.ne.MST) Cycle
        if(MLT.ne.min(ILT1,ILT2).or.MST.ne.min(IST1,IST2)) Cycle
-       ij=DEF_ij8(ic,jc);  if(JC_need(ij).eq.0) Cycle      
+       ij=DEF_ij8(ic,jc);  if(JC_need(ij).eq.0) Cycle
 
 
 !----------------------------------------------------------------------
 ! ...  define number of terms:
 
        ntrm = 0
-       Do k1=1,kt1; it=IP_kt1(k1) 
-       Do k2=1,kt2; jt=IP_kt2(k2)  
+       Do k1=1,kt1; it=IP_kt1(k1)
+       Do k2=1,kt2; jt=IP_kt2(k2)
         if(is.eq.js.and.it.gt.jt) Cycle;  ntrm = ntrm + 1
-       End do; End do 
+       End do; End do
 
 !----------------------------------------------------------------------
 ! ...  joper and JT_oper:
 
        if(allocated(JT_oper)) Deallocate(JT_oper,CT_oper)
        Allocate(JT_oper(ntrm,noper),CT_oper(ntrm,noper))
-       if(IDEF_cme(is,js).eq.0) Cycle 
+       if(IDEF_cme(is,js).eq.0) Cycle
 
-      write(filename,'(a,i3.3,i3.3)') 'data.',is,js
-      open(100,file=filename)
-
-      write(100,*) 'Base Info:'
-      write(100,*) ic,jc,ntrm
-      write(100,*) joper
-      write(100,*) JT_oper
-      write(100,*) 'Outer Loop Info:'
-      write(100,*) kt1,kdt1,ILT1,IST1
-      write(100,*) MLT,MST
-      write(100,*) IP_kt1
-      write(100,*) IM_det1
-      write(100,*) IS_det1
-      write(100,*) nnsym1
-      write(100,*) lsym1
-      write(100,*) C_det1
-      write(100,*) 'Inner Loop Info:'
-      write(100,*) kt2,kdt2,ILT2,IST2
-      write(100,*) IP_kt2
-      write(100,*) IM_det2
-      write(100,*) IS_det2
-      write(100,*) nnsym2
-      write(100,*) lsym2
-      write(100,*) C_det2
+      ! write(filename,'(a,i3.3,i3.3)') 'data.',is,js
+      ! open(100,file=filename)
+      !
+      ! write(100,*) 'Base Info:'
+      ! write(100,*) ic,jc,ntrm
+      ! write(100,*) joper
+      ! write(100,*) JT_oper
+      ! write(100,*) 'Outer Loop Info:'
+      ! write(100,*) kt1,kdt1,ILT1,IST1
+      ! write(100,*) MLT,MST
+      ! write(100,*) IP_kt1
+      ! write(100,*) IM_det1
+      ! write(100,*) IS_det1
+      ! write(100,*) nnsym1
+      ! write(100,*) lsym1
+      ! write(100,*) C_det1
+      ! write(100,*) 'Inner Loop Info:'
+      ! write(100,*) kt2,kdt2,ILT2,IST2
+      ! write(100,*) IP_kt2
+      ! write(100,*) IM_det2
+      ! write(100,*) IS_det2
+      ! write(100,*) nnsym2
+      ! write(100,*) lsym2
+      ! write(100,*) C_det2
 
 !----------------------------------------------------------------------
 ! ... define the normalization constants for different operators:
@@ -170,20 +170,20 @@
         Ssym1(1:ne)=IS_det1(1:ne,kd1)
 
         Call Det_orbitals1
- 
+
        Do kd2 = 1,kdt2
 
 !        if(is.eq.js.and.kd2.lt.kd1) Cycle       ???
 
         Msym2(1:ne)=IM_det2(1:ne,kd2)
         Ssym2(1:ne)=IS_det2(1:ne,kd2)
-       
+
         nzoef = 0;      Call Det_orbitals2
         if(nzoef.gt.0) then
-          Call Term_loop(is,js) 
+          Call Term_loop(is,js)
         endif
 
-       End do 
+       End do
 
        if(mod(kd1,1000).eq.0) then
         Call CPU_TIME(t2)
@@ -264,8 +264,7 @@
        if(time_limit.gt.0.d0.and.(t2-t0)/60.gt.time_limit) Exit
 
       End do    ! over is
- 
+
    10 Continue
 
       End Subroutine Conf_loop
-

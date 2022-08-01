@@ -17,9 +17,9 @@
 
       Implicit none
       Integer, intent(in) :: process, ic, jc
-      Character(80) :: filename
-      write(filename,'(a,i3.3,i3.3)') 'data.',ic,jc
-      open(100,file=filename)
+      ! Character(80) :: filename
+      ! write(filename,'(a,i3.3,i3.3)') 'data.',ic,jc
+      ! open(100,file=filename)
 
 ! ... Send base info
       Call MPI_SSEND(ic,1,MPI_INTEGER,process,0,MPI_COMM_WORLD,ierr)
@@ -56,27 +56,27 @@
       Call MPI_SSEND(lsym2,ne,MPI_INTEGER,process,25,MPI_COMM_WORLD,ierr)
       Call MPI_SSEND(C_det2,kt2*kdt2,MPI_DOUBLE_PRECISION,process,26,MPI_COMM_WORLD,ierr)
 
-      write(100,*) 'Base Info:'
-      write(100,*) ic,jc,ntrm
-      write(100,*) joper
-      write(100,*) JT_oper
-      write(100,*) 'Outer Loop Info:'
-      write(100,*) kt1,kdt1,ILT1,IST1
-      write(100,*) MLT,MST
-      write(100,*) IP_kt1
-      write(100,*) IM_det1
-      write(100,*) IS_det1
-      write(100,*) nnsym1
-      write(100,*) lsym1
-      write(100,*) C_det1
-      write(100,*) 'Inner Loop Info:'
-      write(100,*) kt2,kdt2,ILT2,IST2
-      write(100,*) IP_kt2
-      write(100,*) IM_det2
-      write(100,*) IS_det2
-      write(100,*) nnsym2
-      write(100,*) lsym2
-      write(100,*) C_det2
+      ! write(100,*) 'Base Info:'
+      ! write(100,*) ic,jc,ntrm
+      ! write(100,*) joper
+      ! write(100,*) JT_oper
+      ! write(100,*) 'Outer Loop Info:'
+      ! write(100,*) kt1,kdt1,ILT1,IST1
+      ! write(100,*) MLT,MST
+      ! write(100,*) IP_kt1
+      ! write(100,*) IM_det1
+      ! write(100,*) IS_det1
+      ! write(100,*) nnsym1
+      ! write(100,*) lsym1
+      ! write(100,*) C_det1
+      ! write(100,*) 'Inner Loop Info:'
+      ! write(100,*) kt2,kdt2,ILT2,IST2
+      ! write(100,*) IP_kt2
+      ! write(100,*) IM_det2
+      ! write(100,*) IS_det2
+      ! write(100,*) nnsym2
+      ! write(100,*) lsym2
+      ! write(100,*) C_det2
 
 ! ... Send determinant info
 !      Call MPI_SSEND(ndet,1,MPI_INTEGER,process,27,MPI_COMM_WORLD,ierr)

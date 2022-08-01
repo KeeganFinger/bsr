@@ -767,7 +767,7 @@
       Integer :: i,j,ip,jp,id,kd,ns
       Integer, External :: Iadd_det, Iadd_def, ISORT
 
-      print *, 'Ndet_Idet (ndet,ndef):',ndet, ndef
+      print *, 'Ndet_Idet (det,def):',ndet, ldet, ndef, ldef
       if(ndet.le.0) Return
       Do id=1,ndet
        kd=KPD(id); ip=IPD(id); IPD(id)=Iadd_det(kd,NPD(ip+1))
