@@ -24,8 +24,6 @@
       Integer :: ic, jc ! indexes
       Integer :: send, is_rec, js_rec ! MPI communicator
       Character(80) :: conf
-      
-
 
 ! ... Outer loop over configurations
 
@@ -33,7 +31,6 @@
       do is=1,ic_case
 
         read(nud) ic,kt1,kdt1,ILT1,IST1,MLT,MST
-        print *, is, kt1
 
         if(Allocated(IP_kt1)) Deallocate(IP_kt1)
         Allocate(IP_kt1(kt1))
@@ -105,8 +102,8 @@
           if(IDEF_cme(is,js).eq.0) Cycle
 
 ! ... Begin calculations
-
-          send = 0
+        
+2         send = 0
           do proc=1,nprocs-1
             if(proc_status(proc).ne.0) cycle !skip if process proc is busy
             Call send_data_MPI(proc,is,js)
@@ -123,6 +120,7 @@
             Call add_it_oper(is_rec,js_rec)
             proc_status(proc) = 0
             Call cache_data(1)
+            go to 2
           endif
 
         enddo ! end inner configuration loop
@@ -139,6 +137,13 @@
           t2-t1,' sec.',trim(conf)
 
       enddo ! end outer configuration loop
+      
+      do while(sum(proc_status).ne.0)
+        Call receive_results_MPI(proc,is_rec,js_rec)
+        Call add_res(nur,is_rec,js_rec)
+        Call add_it_oper(is_rec,js_rec)
+        proc_status(proc) = 0
+      enddo
 
 ! ... Release processes from calculations
 

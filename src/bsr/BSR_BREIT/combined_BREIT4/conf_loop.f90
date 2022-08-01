@@ -12,8 +12,11 @@
                                ILT1,ILT2, IST1,IST2, MLT,MST, ic_case
       Use conf_LS,       only: ne
       Use symc_list_LS,  only: JC_need, IC_need, nsymc
-      Use coef_list,     only: ntrm,ctrm, ncoef
+      Use coef_list,     only: ntrm,ctrm, ncoef, coef, idfc, intc,&
+                               ijhm, ctrm, ipcoef
       Use zoef_list,     only: nzoef
+      Use ndet_list,     only: KPD,IPD,NPD,JPD,ndet,ldet
+      Use ndef_list,     only: KPF,IPF,NPF,JPF,ndef,ldef
 
       Implicit none 
       Integer :: k1,k2, it,jt, MLT2,MST2, i,m,k, is,js,ic,jc
@@ -22,7 +25,7 @@
       Real(8), external :: Z_3j
       Integer(8) :: ij
       Integer(8), external :: DEF_ij8
-      Character(80) :: conf
+      Character(80) :: conf, filename
 
 !----------------------------------------------------------------------
 ! ... cycle 1 over configurations:
@@ -98,6 +101,31 @@
        Allocate(JT_oper(ntrm,noper),CT_oper(ntrm,noper))
        if(IDEF_cme(is,js).eq.0) Cycle 
 
+      write(filename,'(a,i3.3,i3.3)') 'data.',is,js
+      open(100,file=filename)
+
+      write(100,*) 'Base Info:'
+      write(100,*) ic,jc,ntrm
+      write(100,*) joper
+      write(100,*) JT_oper
+      write(100,*) 'Outer Loop Info:'
+      write(100,*) kt1,kdt1,ILT1,IST1
+      write(100,*) MLT,MST
+      write(100,*) IP_kt1
+      write(100,*) IM_det1
+      write(100,*) IS_det1
+      write(100,*) nnsym1
+      write(100,*) lsym1
+      write(100,*) C_det1
+      write(100,*) 'Inner Loop Info:'
+      write(100,*) kt2,kdt2,ILT2,IST2
+      write(100,*) IP_kt2
+      write(100,*) IM_det2
+      write(100,*) IS_det2
+      write(100,*) nnsym2
+      write(100,*) lsym2
+      write(100,*) C_det2
+
 !----------------------------------------------------------------------
 ! ... define the normalization constants for different operators:
 
@@ -151,7 +179,9 @@
         Ssym2(1:ne)=IS_det2(1:ne,kd2)
        
         nzoef = 0;      Call Det_orbitals2
-        if(nzoef.gt.0)  Call Term_loop(is,js) 
+        if(nzoef.gt.0) then
+          Call Term_loop(is,js) 
+        endif
 
        End do 
 
@@ -163,6 +193,58 @@
        End do
 
 ! ...  store results for given config.s:
+
+      write(filename,'(a,I3.3,I3.3)') 'IPD.',is,js
+      open(1001,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'JPD.',is,js
+      open(1002,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'KPD.',is,js
+      open(1003,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'NPD.',is,js
+      open(1004,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'IPF_send.',is,js
+      open(2001,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'JPF.',is,js
+      open(2002,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'KPF.',is,js
+      open(2003,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'NPF.',is,js
+      open(2004,file=filename)
+!      write(filename,'(a,I3.3,I3.3)') 'idfc.',is,js
+!      open(3001,file=filename)
+!      write(filename,'(a,I3.3,I3.3)') 'intc.',is,js
+!      open(3002,file=filename)
+!      write(filename,'(a,I3.3,I3.3)') 'coef.',is,js
+!      open(3003,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'ijhm.',ic,jc
+      open(4001,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'ctrm.',ic,jc
+      open(4002,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'ipcoef.',ic,jc
+      open(4003,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'IP_kt1.',ic,jc
+      open(5001,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'IP_kt2.',ic,jc
+      open(5002,file=filename)
+
+!      print *, 'ic,jc,ndet,ldet,ndef,ldef',is,js,ndet,ldet,ndef,ldef
+      write(1001,*) IPD(1:ndet)
+      write(1002,*) JPD(1:ndet)
+      write(1003,*) KPD(1:ndet)
+      write(1004,*) NPD(1:ldet)
+      write(2001,*) shape(IPF)
+      write(2001,*) IPF
+      write(2002,*) JPF(1:ndef)
+      write(2003,*) KPF(1:ndef)
+      write(2004,*) NPF(1:ldef)
+!      write(3001,*) idfc(1:ncoef)
+!      write(3002,*) intc(1:ncoef)
+!      write(3003,*) coef(1:ntrm,1:ncoef)
+      write(4001,*) ijhm(1:ntrm)
+      write(4002,*) ctrm(1:ntrm)
+      write(4003,*) ipcoef(1:ncoef)
+      write(5001,*) IP_kt1(1:kt1)
+      write(5002,*) IP_kt2(1:kt2)
 
        Call Add_res(nur,is,js); Call Add_it_oper(is,js)
 

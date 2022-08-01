@@ -54,8 +54,8 @@
       Use MPI
       Use bsr_breit
       Use conf_LS,      only: ne
-      Use det_list,     only: ndet,ldet
-      Use def_list,     only: ndef,ldef
+      Use ndet_list,    only: ndet,ldet
+      Use ndef_list,    only: ndef,ldef
 
       Implicit none
       Integer :: i,ii,l,ml,mls_max
@@ -192,6 +192,9 @@
           ' number of overlap factors      =', ndef,adef,ldef
       write(pri,'(a,i10)') &
           ' new coeff.s                    =', nc_new
+
+      close(nub)
+      close(nur)
 
 
       End Subroutine Record_results

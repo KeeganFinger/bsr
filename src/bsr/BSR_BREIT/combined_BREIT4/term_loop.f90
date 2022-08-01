@@ -9,12 +9,13 @@
       Use bsr_breit, only: eps_c, myid
       Use conf_LS,   only: joper, noper, CT_oper, JT_oper, coper
       Use zoef_list, only: nzoef, zoef, iz_int, iz_df 
-      Use coef_list, only: ntrm,ctrm,int,idf
+      Use coef_list, only: ntrm,ctrm,int,idf,coef
       Use term_exp
 
       Implicit none
       Integer :: i,m,k,k1,k2,it,jt,is,js
       Real(8) :: C
+      Character(80) :: filename
 
       if(nzoef.le.0) Return
 
@@ -23,7 +24,6 @@
         Do k2=1,kt2; jt=IP_kt2(k2)  
          if(is.eq.js.and.it.gt.jt) Cycle
          k = k + 1;  ctrm(k) = C_det1(k1,kd1)*C_det2(k2,kd2)
-!         if(is.eq.js.and.kd2.ne.kd1) ctrm(k) = ctrm(k) + C_det1(k2,kd1)*C_det2(k1,kd2)    ???    
         End do; End do 
 
         CT_oper = 0.d0

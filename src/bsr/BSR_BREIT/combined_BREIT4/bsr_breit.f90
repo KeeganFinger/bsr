@@ -52,8 +52,8 @@
 !---------------------------------------------------------------------
       Use bsr_breit
       Use conf_LS,      only: ne
-      Use det_list,     only: ndet,ldet
-      Use def_list,     only: ndef,ldef
+      Use ndet_list,    only: ndet,ldet
+      Use ndef_list,    only: ndef,ldef
 
       Implicit none
       Integer :: i,ii,l,ml
@@ -139,7 +139,7 @@
        write(pri,'(/a,T13,F12.2,a)') 'Partial wave:',ttt,' min'
        write(*,  '(/a,T13,F12.2,a)') 'Partial wave:',ttt,' min'
        total_time = total_time + ttt
-       Close(nud,status='DELETE')
+!       Close(nud,status='DELETE')
 
       End do  ! over klsp
 

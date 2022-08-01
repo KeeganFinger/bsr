@@ -6,6 +6,8 @@
       Use conf_LS,       only: ne
       Use coef_list,     only: ntrm
       Use spin_orbitals, only: NNsym1, NNsym2, Lsym1, Lsym2
+      Use ndet_list,     only: ndet, ldet, IPD, JPD, KPD, NPD
+      Use ndef_list,     only: ndef, ldef, IPF, JPF, KPF, NPF
       Use term_exp,      only: kt1, kdt1, ILT1, IST1, MLT, MST, &
                                kt2, kdt2, ILT2, IST2, &
                                IM_det1, IS_det1, &
@@ -22,7 +24,6 @@
       if(ic.le.0) Return ! ic controls looping/kill processes
 
       Call MPI_RECV(jc,1,MPI_INTEGER,0,1,MPI_COMM_WORLD,status,ierr)
-      print *, myid, 'receiving data', ic, jc
       Call MPI_RECV(ntrm,1,MPI_INTEGER,0,2,MPI_COMM_WORLD,status,ierr)
       Call MPI_RECV(joper,noper,MPI_INTEGER,0,3,MPI_COMM_WORLD, status,ierr)
       if(allocated(JT_oper)) Deallocate(JT_oper)
@@ -73,4 +74,35 @@
       Allocate(C_det2(kt2,kdt2))
       Call MPI_RECV(C_det2,kt2*kdt2,MPI_DOUBLE_PRECISION,0,26,MPI_COMM_WORLD,status,ierr)
 
+!      Call MPI_RECV(ndet,1,MPI_INTEGER,0,27,MPI_COMM_WORLD,status,ierr)
+!      Call MPI_RECV(ldet,1,MPI_INTEGER,0,28,MPI_COMM_WORLD,status,ierr)
+!      if(allocated(KPD)) Deallocate(KPD)
+!      Allocate(KPD(ndet))
+!      Call MPI_RECV(KPD,ndet,MPI_INTEGER,0,29,MPI_COMM_WORLD,status,ierr)
+!      if(allocated(IPD)) Deallocate(IPD)  
+!      Allocate(IPD(ndet))
+!      Call MPI_RECV(IPD,ndet,MPI_INTEGER,0,30,MPI_COMM_WORLD,status,ierr)
+!      if(allocated(JPD)) Deallocate(JPD)
+!      Allocate(JPD(ndet))
+!      Call MPI_RECV(JPD,ndet,MPI_INTEGER,0,31,MPI_COMM_WORLD,status,ierr)
+!      if(allocated(NPD)) Deallocate(NPD)
+!      Allocate(NPD(ldet))
+!      Call MPI_RECV(NPD,ldet,MPI_INTEGER,0,32,MPI_COMM_WORLD,status,ierr)
+
+!      Call MPI_RECV(ndef,1,MPI_INTEGER,0,33,MPI_COMM_WORLD,status,ierr)
+!      Call MPI_RECV(ldef,1,MPI_INTEGER,0,34,MPI_COMM_WORLD,status,ierr)
+!      if(allocated(KPF)) Deallocate(KPF)                             
+!      Allocate(KPF(ndef))
+!      Call MPI_RECV(KPF,ndef,MPI_INTEGER,0,35,MPI_COMM_WORLD,status,ierr) 
+!      if(allocated(IPF)) Deallocate(IPF)
+!      Allocate(IPF(ndef))
+!      Call MPI_RECV(IPF,ndef,MPI_INTEGER,0,36,MPI_COMM_WORLD,status,ierr)
+!      if(allocated(JPF)) Deallocate(JPF)
+!      Allocate(JPF(ndef))
+!      Call MPI_RECV(JPF,ndef,MPI_INTEGER,0,37,MPI_COMM_WORLD,status,ierr)
+!      if(allocated(NPF)) Deallocate(NPF)
+!      Allocate(NPF(ldef))
+!      Call MPI_RECV(NPF,ldef,MPI_INTEGER,0,38,MPI_COMM_WORLD,status,ierr)
+
       End Subroutine receive_data_MPI
+

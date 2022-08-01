@@ -69,7 +69,7 @@
 
 ! ... MPI send/receive caching variables
 
-      Integer :: nterm_c, kt1_c, kt2_c
+      Integer :: ntrm_c, kt1_c, kt2_c
       Integer, allocatable :: IP_kt1_c(:), IP_kt2_c(:), &
                               joper_c(:), JT_oper_c(:,:)
 

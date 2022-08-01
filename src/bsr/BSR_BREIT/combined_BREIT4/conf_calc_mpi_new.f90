@@ -8,7 +8,8 @@
       Use term_exp,      only: kdt1, ILT1, IST1, MLT, MST, &
                                kdt2, ILT2, IST2, &
                                IM_det1, IS_det1, &
-                               IM_det2, IS_det2, kt1
+                               IM_det2, IS_det2, kt1,&
+                               kd1, kd2
       Use conf_LS,       only: ne
       Use zoef_list,     only: nzoef
 
@@ -16,7 +17,6 @@
       Real(8), parameter :: zero=0.d0, one=1.d0
       Real(8) :: C_ee, C_so, C_ss !normalization factors
       Real(8), external :: Z_3j
-      Integer :: kd1, kd2 !iterators
       Integer :: is, js !indexes
 
 ! ... Prepare to receive data
@@ -25,7 +25,6 @@
 
 1     Call receive_data_MPI(is,js)
       if(is.lt.0) return
-      print *, myid,'conf_calc', is, js, kt1
 
 ! ... Define normalization constants for different operators
       C_so = zero
@@ -78,7 +77,9 @@
 
           nzoef = 0
           Call Det_orbitals2
-          if(nzoef.gt.0) Call Term_loop(is,js)
+          if(nzoef.gt.0) then
+            Call Term_loop(is,js)
+          endif
           
         enddo ! loop over kd2
 
@@ -89,7 +90,6 @@
         endif
       enddo ! loop over kd1
 
-      print *, myid,'conf_calc2', is, js, kt1
       Call send_results_MPI(is,js)
       go to 1
 

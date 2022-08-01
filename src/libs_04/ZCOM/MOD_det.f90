@@ -249,12 +249,16 @@
       if(ndet.eq.0) Return
 
       write(nu) kpd(1:ndet)
+      write(841,*) 'KPD:'
       write(841,*) kpd(1:ndet)
       write(nu) ipd(1:ndet)
+      write(841,*) 'IPD:'
       write(841,*) ipd(1:ndet)
       write(nu) npd(1:ldet)
-      write(841,*) npd(1:ndet)
+      write(841,*) 'NPD:'
+      write(841,*) npd(1:ldet)
       write(nu) jpd(1:ndet)
+      write(841,*) 'JPD:'
       write(841,*) jpd(1:ndet)
 
       End Subroutine Write_det
@@ -432,12 +436,16 @@
       if(ndef.eq.0) Return
 
       write(nu) kpf(1:ndef)
+      write(842,*) 'KPF:'
       write(842,*) kpf(1:ndef)
       write(nu) ipf(1:ndef)
+      write(842,*) 'IPF:'
       write(842,*) ipf(1:ndef)
       write(nu) npf(1:ldef)
-      write(842,*) npf(1:ndef)
+      write(842,*) 'NPF:'
+      write(842,*) npf(1:ldef)
       write(nu) jpf(1:ndef)
+      write(842,*) 'JPF:'
       write(842,*) jpf(1:ndef)
 
       End Subroutine Write_def
@@ -759,6 +767,7 @@
       Integer :: i,j,ip,jp,id,kd,ns
       Integer, External :: Iadd_det, Iadd_def, ISORT
 
+      print *, 'Ndet_Idet (ndet,ndef):',ndet, ndef
       if(ndet.le.0) Return
       Do id=1,ndet
        kd=KPD(id); ip=IPD(id); IPD(id)=Iadd_det(kd,NPD(ip+1))

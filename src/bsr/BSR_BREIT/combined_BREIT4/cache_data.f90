@@ -1,13 +1,13 @@
 !======================================================================
-      Subroutine cache_data(read)
+      Subroutine cache_data(reset)
 !======================================================================
       Use bsr_breit
       Use coef_list,     only: ntrm
       Use term_exp,      only: kt1, kt2, IP_kt1, IP_kt2
 
-      Integer :: read !write/read (0/1) switch
+      Integer :: reset !write/read (0/1) switch
 
-      if(read.eq.0) then
+      if(reset.eq.0) then
 
         ntrm_c = ntrm
         kt1_c = kt1
@@ -26,7 +26,7 @@
         Allocate(IP_kt2_c(kt2_c))
         IP_kt2_c = IP_kt2
 
-      elseif(read.eq.1) then
+      elseif(reset.eq.1) then
 
         ntrm = ntrm_c
         kt1 = kt1_c
