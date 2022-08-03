@@ -3,8 +3,10 @@
 !=======================================================================
       Use MPI
       Use bsr_breit
-      Use spin_orbitals, only: Msym1, Ssym1, &
-                               Msym2, Ssym2
+      Use spin_orbitals, only: NNsym1, Lsym1, Msym1, Ssym1, &
+                               NNsym2, Lsym2, Msym2, Ssym2, &
+                               isym1, isym2, ipsym1, ipsym2, &
+                               ksym1, ksym2
       Use term_exp,      only: kdt1, ILT1, IST1, MLT, MST, &
                                kdt2, ILT2, IST2, &
                                IM_det1, IS_det1, &
@@ -18,6 +20,7 @@
       Real(8) :: C_ee, C_so, C_ss !normalization factors
       Real(8), external :: Z_3j
       Integer :: is, js !indexes
+      Character(80) :: filename
 
 ! ... Prepare to receive data
       Call Alloc_boef(-1)
@@ -25,6 +28,41 @@
 
 1     Call receive_data_MPI(is,js)
       if(is.lt.0) return
+
+      write(filename,'(a,I3.3,I3.3)') 'nsym.',is,js
+      open(2000,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'lsym.',is,js
+      open(2001,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'msym.',is,js
+      open(2002,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'ssym.',is,js
+      open(2003,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'isym.',is,js
+      open(2004,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'ipsym.',is,js
+      open(2005,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'ksym.',is,js
+      open(2006,file=filename)
+
+      write(2000,*) 'Nsym1'
+      write(2000,*) NNsym1
+      write(2000,*) 'Nsym2'
+      write(2000,*) NNsym2
+
+      write(2001,*) 'Lsym1'
+      write(2001,*) Lsym1
+      write(2001,*) 'Lsym2'
+      write(2001,*) Lsym2
+
+!      write(2002,*) 'Msym1'
+!      write(2002,*) Msym1
+!      write(2002,*) 'Msym2'
+!      write(2002,*) Msym2
+
+!      write(2003,*) 'Ssym1'
+!      write(2003,*) Ssym1
+!      write(2003,*) 'Ssym2'
+!      write(2003,*) Ssym2
 
 ! ... Define normalization constants for different operators
       C_so = zero
@@ -89,6 +127,31 @@
           go to 1
         endif
       enddo ! loop over kd1
+
+      write(2002,*) 'Msym1'
+      write(2002,*) Msym1
+      write(2002,*) 'Msym2'
+      write(2002,*) Msym2
+
+      write(2003,*) 'Ssym1'
+      write(2003,*) Ssym1
+      write(2003,*) 'Ssym2'
+      write(2003,*) Ssym2
+
+      write(2004,*) 'Isym1'
+      write(2004,*) isym1
+      write(2004,*) 'Isym2'
+      write(2004,*) isym2
+
+      write(2005,*) 'IPsym1'
+      write(2005,*) ipsym1
+      write(2005,*) 'IPsym2'
+      write(2005,*) ipsym2
+
+      write(2006,*) 'Ksym1'
+      write(2006,*) Ksym1
+      write(2006,*) 'Ksym2'
+      write(2006,*) Ksym2
 
       Call send_results_MPI(is,js)
       go to 1

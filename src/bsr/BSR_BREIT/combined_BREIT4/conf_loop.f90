@@ -5,7 +5,9 @@
 !-----------------------------------------------------------------------
       Use bsr_breit
       Use spin_orbitals, only: Lsym1,Msym1,Ssym1,NNsym1, &
-                               Lsym2,Msym2,Ssym2,NNsym2
+                               Lsym2,Msym2,Ssym2,NNsym2, &
+                               isym1,isym2,ipsym1,ipsym2, &
+                               ksym1, ksym2
       Use term_exp,      only: kt1,kt2, IP_kt1,IP_kt2, &
                                kd1,kd2, kdt1, kdt2, C_det1, C_det2, &
                                IM_det1,IM_det2, IS_det1,IS_det2, &
@@ -129,6 +131,42 @@
 !----------------------------------------------------------------------
 ! ... define the normalization constants for different operators:
 
+      write(filename,'(a,I3.3,I3.3)') 'nsym.',is,js
+      open(2000,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'lsym.',is,js
+      open(2001,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'msym.',is,js
+      open(2002,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'ssym.',is,js
+      open(2003,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'isym.',is,js
+      open(2004,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'ipsym.',is,js
+      open(2005,file=filename)
+      write(filename,'(a,I3.3,I3.3)') 'ksym.',is,js
+      open(2006,file=filename)
+
+      write(2000,*) 'Nsym1'
+      write(2000,*) NNsym1
+      write(2000,*) 'Nsym2'
+      write(2000,*) NNsym2
+
+      write(2001,*) 'Lsym1'
+      write(2001,*) Lsym1
+      write(2001,*) 'Lsym2'
+      write(2001,*) Lsym2
+
+!      write(2002,*) 'Msym1'
+!      write(2002,*) Msym1
+!      write(2002,*) 'Msym2'
+!      write(2002,*) Msym2
+
+!      write(2003,*) 'Ssym1'
+!      write(2003,*) Ssym1
+!      write(2003,*) 'Ssym2'
+!      write(2003,*) Ssym2
+
+
        C_so = zero
        if(joper(4)+joper(5).ne.0) &
         C_so = Z_3j(ILT1,-MLT+2,3,1,ILT2,MLT)* &
@@ -192,61 +230,35 @@
 
        End do
 
+      write(2002,*) 'Msym1'
+      write(2002,*) Msym1
+      write(2002,*) 'Msym2'
+      write(2002,*) Msym2
+
+      write(2003,*) 'Ssym1'
+      write(2003,*) Ssym1
+      write(2003,*) 'Ssym2'
+      write(2003,*) Ssym2
+
+      write(2004,*) 'Isym1'
+      write(2004,*) isym1
+      write(2004,*) 'Isym2'
+      write(2004,*) isym2
+
+      write(2005,*) 'IPsym1'
+      write(2005,*) ipsym1
+      write(2005,*) 'IPsym2'
+      write(2005,*) ipsym2
+      
+      write(2006,*) 'Ksym1'
+      write(2006,*) Ksym1
+      write(2006,*) 'Ksym2'
+      write(2006,*) Ksym2
+
 ! ...  store results for given config.s:
 
-      write(filename,'(a,I3.3,I3.3)') 'IPD.',is,js
-      open(1001,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'JPD.',is,js
-      open(1002,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'KPD.',is,js
-      open(1003,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'NPD.',is,js
-      open(1004,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'IPF_send.',is,js
-      open(2001,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'JPF.',is,js
-      open(2002,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'KPF.',is,js
-      open(2003,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'NPF.',is,js
-      open(2004,file=filename)
-!      write(filename,'(a,I3.3,I3.3)') 'idfc.',is,js
-!      open(3001,file=filename)
-!      write(filename,'(a,I3.3,I3.3)') 'intc.',is,js
-!      open(3002,file=filename)
-!      write(filename,'(a,I3.3,I3.3)') 'coef.',is,js
-!      open(3003,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'ijhm.',ic,jc
-      open(4001,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'ctrm.',ic,jc
-      open(4002,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'ipcoef.',ic,jc
-      open(4003,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'IP_kt1.',ic,jc
-      open(5001,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'IP_kt2.',ic,jc
-      open(5002,file=filename)
-
-!      print *, 'ic,jc,ndet,ldet,ndef,ldef',is,js,ndet,ldet,ndef,ldef
-      write(1001,*) IPD(1:ndet)
-      write(1002,*) JPD(1:ndet)
-      write(1003,*) KPD(1:ndet)
-      write(1004,*) NPD(1:ldet)
-      write(2001,*) shape(IPF)
-      write(2001,*) IPF
-      write(2002,*) JPF(1:ndef)
-      write(2003,*) KPF(1:ndef)
-      write(2004,*) NPF(1:ldef)
-!      write(3001,*) idfc(1:ncoef)
-!      write(3002,*) intc(1:ncoef)
-!      write(3003,*) coef(1:ntrm,1:ncoef)
-      write(4001,*) ijhm(1:ntrm)
-      write(4002,*) ctrm(1:ntrm)
-      write(4003,*) ipcoef(1:ncoef)
-      write(5001,*) IP_kt1(1:kt1)
-      write(5002,*) IP_kt2(1:kt2)
-
        Call Add_res(nur,is,js); Call Add_it_oper(is,js)
+       IPF=0
 
       End do    ! over js
 
@@ -264,7 +276,7 @@
        if(time_limit.gt.0.d0.and.(t2-t0)/60.gt.time_limit) Exit
 
       End do    ! over is
-
+      
    10 Continue
 
       End Subroutine Conf_loop

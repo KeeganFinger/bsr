@@ -3,11 +3,11 @@
 !======================================================================
       Use MPI
       Use bsr_breit,      only: myid, ierr, noper, joper, JT_oper
-      Use coef_list,      only: ntrm, ncoef, idfc, intc, coef, ijhm, &
-                                ctrm, ipcoef
+      Use coef_list,      only: ntrm, ncoef, idfc, intc, coef!, ijhm, &
+                                !ctrm, ipcoef
       Use term_exp,       only: kt1, kt2, IP_kt1, IP_kt2
-      Use ndet_list,      only: ndet, ldet, KPD, IPD, NPD, JPD
-      Use ndef_list,      only: ndef, ldef, KPF, IPF, NPF, JPF
+      Use ndet_list,      only: ndet, ldet, KPD, IPD, NPD, JPD, idet
+      Use ndef_list,      only: ndef, ldef, KPF, IPF, NPF, JPF, idef
 
       Implicit none
       Integer, intent(in) :: ic, jc
@@ -33,35 +33,36 @@
       Call MPI_SSEND(intc,ncoef,MPI_INTEGER,0,11,MPI_COMM_WORLD,ierr)
       Call MPI_SSEND(coef,ntrm*ncoef,MPI_DOUBLE_PRECISION,0,12,MPI_COMM_WORLD,ierr)
 
-      Call MPI_SSEND(ijhm,ntrm,MPI_INTEGER,0,25,MPI_COMM_WORLD,ierr)
-      Call MPI_SSEND(ctrm,ntrm,MPI_DOUBLE_PRECISION,0,26,MPI_COMM_WORLD,ierr)
-      Call MPI_SSEND(ipcoef,ncoef,MPI_INTEGER,0,27,MPI_COMM_WORLD,ierr)
+!      Call MPI_SSEND(ijhm,ntrm,MPI_INTEGER,0,25,MPI_COMM_WORLD,ierr)
+!      Call MPI_SSEND(ctrm,ntrm,MPI_DOUBLE_PRECISION,0,26,MPI_COMM_WORLD,ierr)
+!      Call MPI_SSEND(ipcoef,ncoef,MPI_INTEGER,0,27,MPI_COMM_WORLD,ierr)
 
 ! ... Send det info
       Call MPI_SSEND(ndet,1,MPI_INTEGER,0,13,MPI_COMM_WORLD,ierr)
       Call MPI_SSEND(ldet,1,MPI_INTEGER,0,14,MPI_COMM_WORLD,ierr)
-      Call MPI_SSEND(KPD,ndet,MPI_INTEGER,0,15,MPI_COMM_WORLD,ierr)
-      Call MPI_SSEND(IPD,ndet,MPI_INTEGER,0,16,MPI_COMM_WORLD,ierr)
-      Call MPI_SSEND(JPD,ndet,MPI_INTEGER,0,17,MPI_COMM_WORLD,ierr)
-      Call MPI_SSEND(NPD,ldet,MPI_INTEGER,0,18,MPI_COMM_WORLD,ierr)
+      Call MPI_SSEND(KPD,idet,MPI_INTEGER,0,15,MPI_COMM_WORLD,ierr)
+      Call MPI_SSEND(IPD,idet,MPI_INTEGER,0,16,MPI_COMM_WORLD,ierr)
+      Call MPI_SSEND(JPD,idet,MPI_INTEGER,0,17,MPI_COMM_WORLD,ierr)
+      Call MPI_SSEND(NPD,idet,MPI_INTEGER,0,18,MPI_COMM_WORLD,ierr)
 
 ! ... Send def info
       Call MPI_SSEND(ndef,1,MPI_INTEGER,0,19,MPI_COMM_WORLD,ierr)
       Call MPI_SSEND(ldef,1,MPI_INTEGER,0,20,MPI_COMM_WORLD,ierr)
-      Call MPI_SSEND(KPF,ndef,MPI_INTEGER,0,21,MPI_COMM_WORLD,ierr)
-      Call MPI_SSEND(IPF,ndef,MPI_INTEGER,0,22,MPI_COMM_WORLD,ierr)
-      Call MPI_SSEND(JPF,ndef,MPI_INTEGER,0,23,MPI_COMM_WORLD,ierr)
-      Call MPI_SSEND(NPF,ldef,MPI_INTEGER,0,24,MPI_COMM_WORLD,ierr)
+      Call MPI_SSEND(KPF,idef,MPI_INTEGER,0,21,MPI_COMM_WORLD,ierr)
+      Call MPI_SSEND(IPF,idef,MPI_INTEGER,0,22,MPI_COMM_WORLD,ierr)
+      Call MPI_SSEND(JPF,idef,MPI_INTEGER,0,23,MPI_COMM_WORLD,ierr)
+      Call MPI_SSEND(NPF,idef,MPI_INTEGER,0,24,MPI_COMM_WORLD,ierr)
 
-      write(filename,'(a,I3.3,I3.3)') 'IPF_send.',ic,jc
-      open(2001,file=filename)
-      write(2001,*) shape(IPF)
-      write(2001,*) IPF
+!      write(filename,'(a,I3.3,I3.3)') 'IPF_send.',ic,jc
+!      open(2001,file=filename)
+!      write(2001,*) shape(IPF)
+!      write(2001,*) IPF
 
 !      print *, 'ic,jc,ndet,ldet,ndef,ldef',ic,jc,ndet,ldet,ndef,ldef
       ndet = 0
       ldet = 0
       ndef = 0
       ldef = 0
+      IPF = 0;
 
       End Subroutine send_results_MPI

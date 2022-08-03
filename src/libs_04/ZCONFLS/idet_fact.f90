@@ -20,6 +20,8 @@
       Integer :: np(2*ne),n1(2*ne),n2(2*ne),n3(2*ne),n4(2*ne)     
       Integer, external :: Iadd_ndet, Iadd_ndef, ISORT
 
+      NP = 0; N1 = 0; N2 = 0; N3 = 0; N4 = 0;
+
       kd = 0
       Do is = 1,NSYM
 
@@ -54,6 +56,9 @@
       Idet_fact=0; if(kd.eq.0) Return
 
       NP(1:kd)=N3(1:kd)*ibf + N4(1:kd)
+!      print *, 'ibf,kd,NSYM', ibf, kd, NSYM
+!      print *, 'N3', N3
+!      print *, 'N4', N4
 
       k=ISORT(kd,NP)
 

@@ -19,7 +19,7 @@
       Integer, external :: IDEF_cme
       Real(8), external :: Z_3j
       Integer(8), external :: DEF_ij8
-      Integer :: MLT2, MST2, ij
+      Integer :: MLT2, MST2, ij, next_is, next_js
       Integer :: is, js, k1, k2, it, jt, proc ! iterators
       Integer :: ic, jc ! indexes
       Integer :: send, is_rec, js_rec ! MPI communicator
@@ -112,16 +112,22 @@
             exit !exit loop if data sent to a process
           enddo
 
+          Call receive_results_MPI(proc,is_rec,js_rec)
+          print *, 'is,js:', is, is_rec, js, js_rec
+          Call add_res(nur,is_rec,js_rec)
+          Call add_it_oper(is_rec,js_rec)
+          proc_status(proc) = 0
+
           ! receive data if no processes available
-          if(send.eq.0) then
-            Call cache_data(0)
-            Call receive_results_MPI(proc,is_rec,js_rec)
-            Call add_res(nur,is_rec,js_rec)
-            Call add_it_oper(is_rec,js_rec)
-            proc_status(proc) = 0
-            Call cache_data(1)
-            go to 2
-          endif
+!          if(send.eq.0) then
+!            Call cache_data(0)
+!            Call receive_results_MPI(proc,is_rec,js_rec)
+!            Call add_res(nur,is_rec,js_rec)
+!            Call add_it_oper(is_rec,js_rec)
+!            proc_status(proc) = 0
+!            Call cache_data(1)
+!            go to 2
+!          endif
 
         enddo ! end inner configuration loop
 
