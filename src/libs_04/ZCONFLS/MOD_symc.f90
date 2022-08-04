@@ -202,26 +202,14 @@
 
       Implicit none
       Integer :: nu,i
-      character(len=1024) :: filename
-
-      write(filename,'(A4,I3.3)') 'symc.', nu
-
-      open(837,file=filename)
 
       write(nu) nsymc,lsymc
-      write(837,*), nsymc, lsymc
       write(nu) (LT_conf(i),i=1,nsymc)
-      write(837,*) (LT_conf(i),i=1,nsymc)
       write(nu) (ST_conf(i),i=1,nsymc)
-      write(837,*) (ST_conf(i),i=1,nsymc)
       write(nu) (no_conf(i),i=1,nsymc)
-      write(837,*) (no_conf(i),i=1,nsymc)
       write(nu) (ip_conf(i),i=1,nsymc)
-      write(837,*) (ip_conf(i),i=1,nsymc)
       write(nu) (iq_conf(i),i=1,lsymc)
-      write(837,*) (iq_conf(i),i=1,lsymc)
       write(nu) (ln_conf(i),i=1,lsymc)
-      write(837,*) (ln_conf(i),i=1,lsymc)
       Deallocate (LT_conf,ST_conf,no_conf,ip_conf,iq_conf,ln_conf)
       msymc = 0; jsymc = lsymc/nsymc + 1; ksymc = 0; lsymc=0
 

@@ -240,26 +240,13 @@
 
       character(len=1024) :: filename
 
-      write(filename,'(A3,I3.3)') 'det', nu
-
-      open(841,file=filename)
-
       write(nu) ndet,ldet,jmdet
-      write(841,*) ndet,ldet,jmdet
       if(ndet.eq.0) Return
 
       write(nu) kpd(1:ndet)
-      write(841,*) 'KPD:'
-      write(841,*) kpd(1:ndet)
       write(nu) ipd(1:ndet)
-      write(841,*) 'IPD:'
-      write(841,*) ipd(1:ndet)
       write(nu) npd(1:ldet)
-      write(841,*) 'NPD:'
-      write(841,*) npd(1:ldet)
       write(nu) jpd(1:ndet)
-      write(841,*) 'JPD:'
-      write(841,*) jpd(1:ndet)
 
       End Subroutine Write_det
 
@@ -388,9 +375,6 @@
       IPF(ndef)=ldef
       Do i=1,kd; ldef=ldef+1; NPF(ldef)=NP(i); End do
       
-      print *, 'kd,ldef,NPF(ldef):', kd, ldef, NPF(ldef)
-!      print *, 'NP:', NP
-
       Do i=ndef,i1+1,-1; jpf(i)=jpf(i-1); End do
       jpf(i1)=ndef
       Iadd_def =ndef     ! or i1 ???
@@ -428,49 +412,8 @@
       Implicit none
       Integer :: nu
 
-      character(80) :: filename
       logical :: file_exists
 
-
-      write(filename,'(a,I3.3)') 'IPF'
-      inquire(file=filename,exist=file_exists)
-      if(file_exists) then
-        open(842,file=filename,status='old',position='append')
-      else
-        open(842,file=filename,status='new')
-      endif
-      write(842,*) 'Next IPF'
-      write(842,*) IPF(1:ndef)
-
-      write(filename,'(a,I3.3)') 'JPF'
-      inquire(file=filename,exist=file_exists)
-      if(file_exists) then
-        open(843,file=filename,status='old',position='append')
-      else
-        open(843,file=filename,status='new')
-      endif
-      write(843,*) 'Next JPF'
-      write(843,*) JPF(1:ndef)
-
-      write(filename,'(a,I3.3)') 'KPF'
-      inquire(file=filename,exist=file_exists)
-      if(file_exists) then
-        open(844,file=filename,status='old',position='append')
-      else
-        open(844,file=filename,status='new')
-      endif
-      write(844,*) 'Next KPF'
-      write(844,*) KPF(1:ndef)
-
-      write(filename,'(a,I3.3)') 'NPF'
-      inquire(file=filename,exist=file_exists)
-      if(file_exists) then
-        open(845,file=filename,status='old',position='append')
-      else
-        open(845,file=filename,status='new')
-      endif
-      write(845,*) 'Next NPF'
-      write(845,*) NPF(1:ldef)
 
       write(nu) ndef,ldef,jmdef
       if(ndef.eq.0) Return
@@ -799,67 +742,6 @@
       Integer, External :: Iadd_det, Iadd_def, ISORT
       character(80) :: filename
       logical :: file_exists
-
-      write(filename,'(a,I3.3)') 'IPD-Idet'
-      inquire(file=filename,exist=file_exists)
-      if(file_exists) then
-        open(942,file=filename,status='old',position='append')
-      else
-        open(942,file=filename,status='new')
-      endif
-      write(942,*) 'Next IPD'
-      write(942,*) IPD(1:ndet)
-
-      write(filename,'(a,I3.3)') 'KPD-Idet'
-      inquire(file=filename,exist=file_exists)
-      if(file_exists) then
-        open(943,file=filename,status='old',position='append')
-      else
-        open(943,file=filename,status='new')
-      endif
-      write(943,*) 'Next KPD'
-      write(943,*) KPD(1:ndet)
-
-      write(filename,'(a,I3.3)') 'NPD-Idet'
-      inquire(file=filename,exist=file_exists)
-      if(file_exists) then
-        open(944,file=filename,status='old',position='append')
-      else
-        open(944,file=filename,status='new')
-      endif
-      write(944,*) 'Next NPD'
-      write(944,*) NPD(1:ldet)
-
-      write(filename,'(a,I3.3)') 'IPF-Idet'
-      inquire(file=filename,exist=file_exists)
-      if(file_exists) then
-        open(945,file=filename,status='old',position='append')
-      else
-        open(945,file=filename,status='new')
-      endif
-      write(945,*) 'Next IPF'
-      write(945,*) IPF(1:ndef)
-
-      write(filename,'(a,I3.3)') 'KPF-Idet'
-      inquire(file=filename,exist=file_exists)
-      if(file_exists) then
-        open(946,file=filename,status='old',position='append')
-      else
-        open(946,file=filename,status='new')
-      endif
-      write(946,*) 'Next KPF'
-      write(946,*) KPF(1:ndef)
-
-      write(filename,'(a,I3.3)') 'NPF-Idet'
-      inquire(file=filename,exist=file_exists)
-      if(file_exists) then
-        open(947,file=filename,status='old',position='append')
-      else
-        open(947,file=filename,status='new')
-      endif
-      write(947,*) 'Next NPF'
-      write(947,*) NPF(1:ldef)
-
 
       if(ndet.le.0) Return
       Do id=1,ndet

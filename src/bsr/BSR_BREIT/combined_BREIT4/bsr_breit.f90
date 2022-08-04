@@ -122,17 +122,6 @@
 
        Call Record_int_inf
 
-! ... print some main dimensions:
-
-!       write(pri,'(/a/)') &
-!          'Results for new angular symmetry calculations:'
-!       write(pri,'(a,i10,f10.1)') &
-!          'number of overlap determinants =', ndet,ldet
-!       write(pri,'(a,i10,f10.1)') &
-!          'number of overlap factors      =', ndef,ldef
-!       write(pri,'(a,i10,f10.1)') &
-!          'new ang. coeff.s               =', nc_new
-
 ! ... time for one partial wave:
 
        Call CPU_TIME(tt2); ttt=(tt2-tt1)/60

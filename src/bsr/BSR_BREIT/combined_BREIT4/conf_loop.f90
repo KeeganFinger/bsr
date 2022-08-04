@@ -5,20 +5,15 @@
 !-----------------------------------------------------------------------
       Use bsr_breit
       Use spin_orbitals, only: Lsym1,Msym1,Ssym1,NNsym1, &
-                               Lsym2,Msym2,Ssym2,NNsym2, &
-                               isym1,isym2,ipsym1,ipsym2, &
-                               ksym1, ksym2
+                               Lsym2,Msym2,Ssym2,NNsym2
       Use term_exp,      only: kt1,kt2, IP_kt1,IP_kt2, &
                                kd1,kd2, kdt1, kdt2, C_det1, C_det2, &
                                IM_det1,IM_det2, IS_det1,IS_det2, &
                                ILT1,ILT2, IST1,IST2, MLT,MST, ic_case
       Use conf_LS,       only: ne
       Use symc_list_LS,  only: JC_need, IC_need, nsymc
-      Use coef_list,     only: ntrm,ctrm, ncoef, coef, idfc, intc,&
-                               ijhm, ctrm, ipcoef
+      Use coef_list,     only: ntrm,ctrm, ncoef
       Use zoef_list,     only: nzoef
-      Use ndet_list,     only: KPD,IPD,NPD,JPD,ndet,ldet
-      Use ndef_list,     only: KPF,IPF,NPF,JPF,ndef,ldef
 
       Implicit none
       Integer :: k1,k2, it,jt, MLT2,MST2, i,m,k, is,js,ic,jc
@@ -27,7 +22,7 @@
       Real(8), external :: Z_3j
       Integer(8) :: ij
       Integer(8), external :: DEF_ij8
-      Character(80) :: conf, filename
+      Character(80) :: conf
 
 !----------------------------------------------------------------------
 ! ... cycle 1 over configurations:
@@ -103,69 +98,8 @@
        Allocate(JT_oper(ntrm,noper),CT_oper(ntrm,noper))
        if(IDEF_cme(is,js).eq.0) Cycle
 
-      ! write(filename,'(a,i3.3,i3.3)') 'data.',is,js
-      ! open(100,file=filename)
-      !
-      ! write(100,*) 'Base Info:'
-      ! write(100,*) ic,jc,ntrm
-      ! write(100,*) joper
-      ! write(100,*) JT_oper
-      ! write(100,*) 'Outer Loop Info:'
-      ! write(100,*) kt1,kdt1,ILT1,IST1
-      ! write(100,*) MLT,MST
-      ! write(100,*) IP_kt1
-      ! write(100,*) IM_det1
-      ! write(100,*) IS_det1
-      ! write(100,*) nnsym1
-      ! write(100,*) lsym1
-      ! write(100,*) C_det1
-      ! write(100,*) 'Inner Loop Info:'
-      ! write(100,*) kt2,kdt2,ILT2,IST2
-      ! write(100,*) IP_kt2
-      ! write(100,*) IM_det2
-      ! write(100,*) IS_det2
-      ! write(100,*) nnsym2
-      ! write(100,*) lsym2
-      ! write(100,*) C_det2
-
 !----------------------------------------------------------------------
 ! ... define the normalization constants for different operators:
-
-      write(filename,'(a,I3.3,I3.3)') 'nsym.',is,js
-      open(2000,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'lsym.',is,js
-      open(2001,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'msym.',is,js
-      open(2002,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'ssym.',is,js
-      open(2003,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'isym.',is,js
-      open(2004,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'ipsym.',is,js
-      open(2005,file=filename)
-      write(filename,'(a,I3.3,I3.3)') 'ksym.',is,js
-      open(2006,file=filename)
-
-      write(2000,*) 'Nsym1'
-      write(2000,*) NNsym1
-      write(2000,*) 'Nsym2'
-      write(2000,*) NNsym2
-
-      write(2001,*) 'Lsym1'
-      write(2001,*) Lsym1
-      write(2001,*) 'Lsym2'
-      write(2001,*) Lsym2
-
-!      write(2002,*) 'Msym1'
-!      write(2002,*) Msym1
-!      write(2002,*) 'Msym2'
-!      write(2002,*) Msym2
-
-!      write(2003,*) 'Ssym1'
-!      write(2003,*) Ssym1
-!      write(2003,*) 'Ssym2'
-!      write(2003,*) Ssym2
-
 
        C_so = zero
        if(joper(4)+joper(5).ne.0) &
@@ -230,35 +164,9 @@
 
        End do
 
-      write(2002,*) 'Msym1'
-      write(2002,*) Msym1
-      write(2002,*) 'Msym2'
-      write(2002,*) Msym2
-
-      write(2003,*) 'Ssym1'
-      write(2003,*) Ssym1
-      write(2003,*) 'Ssym2'
-      write(2003,*) Ssym2
-
-      write(2004,*) 'Isym1'
-      write(2004,*) isym1
-      write(2004,*) 'Isym2'
-      write(2004,*) isym2
-
-      write(2005,*) 'IPsym1'
-      write(2005,*) ipsym1
-      write(2005,*) 'IPsym2'
-      write(2005,*) ipsym2
-      
-      write(2006,*) 'Ksym1'
-      write(2006,*) Ksym1
-      write(2006,*) 'Ksym2'
-      write(2006,*) Ksym2
-
 ! ...  store results for given config.s:
 
        Call Add_res(nur,is,js); Call Add_it_oper(is,js)
-       IPF=0
 
       End do    ! over js
 

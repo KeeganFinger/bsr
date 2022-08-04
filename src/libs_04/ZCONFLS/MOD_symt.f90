@@ -249,20 +249,11 @@
 
       Implicit none
       Integer :: nu,i
-      character(len=1024) :: filename
-
-      write(filename,'(A4,I3.3)') 'symt.', nu
-
-      open(838,file=filename)
 
       write(nu) nsymt,lsymt
-      write(838,*) nsymt, lsymt
       write(nu) (IT_conf(i),i=1,nsymt)
-      write(838,*) (IT_conf(i),i=1,nsymt)
       write(nu) (ip_term(i),i=1,nsymt)
-      write(838,*) (ip_term(i),i=1,nsymt)
       write(nu) (LS_term(i,:),i=1,lsymt)
-      write(838,*) (LS_term(i,:),i=1,lsymt)
       Deallocate (IT_conf,ip_term,LS_term,IT_stat)
       msymt = 0; jsymt=lsymt/nsymt+1; ksymt = 0; lsymt=0
 
@@ -277,22 +268,15 @@
 
       Implicit none
       Integer :: nu,i,j,n
-      character(len=1024) :: filename
-
-      write(filename,'(A4,I3.3)') 'oper_write.', nu
-
-      open(839,file=filename)
 
       n = nsymt*(nsymt+1)/2
       write(nu) n
-      write(839, *) n
       Do i = 1,n
        Do j=1,noper
         if(IT_oper(j,i).eq. 0) IT_oper(j,i)=1
         if(IT_oper(j,i).eq.-1) IT_oper(j,i)=0
        End do
        write(nu) IT_oper(:,i)
-       write(839,*) IT_oper(:,i)
       End do
 
       End Subroutine Write_oper_LS
@@ -306,14 +290,8 @@
       Implicit none
       Integer, intent(in) :: nu
       Integer :: j
-      character(len=1024) :: filename
-
-      write(filename,'(A4,I3.3)') 'oper_record.', nu
-
-      open(840,file=filename)
 
       write(nu) ij_oper
-      write(840,*) ij_oper
       Do ij = 1,ij_oper
        Do j=1,noper
 !        if(IT_oper(j,ij).eq. 0) IT_oper(j,ij)=1
@@ -321,7 +299,6 @@
        End do
       End do
       write(nu) IT_oper
-      write(840,*) IT_oper
 
       End Subroutine Record_oper_LS
 

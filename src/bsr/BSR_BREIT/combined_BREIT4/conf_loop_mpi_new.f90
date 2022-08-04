@@ -113,7 +113,6 @@
           enddo
 
           Call receive_results_MPI(proc,is_rec,js_rec)
-          print *, 'is,js:', is, is_rec, js, js_rec
           Call add_res(nur,is_rec,js_rec)
           Call add_it_oper(is_rec,js_rec)
           proc_status(proc) = 0

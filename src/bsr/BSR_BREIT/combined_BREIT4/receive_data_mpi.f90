@@ -6,8 +6,6 @@
       Use conf_LS,       only: ne
       Use coef_list,     only: ntrm
       Use spin_orbitals, only: NNsym1, NNsym2, Lsym1, Lsym2
-      Use ndet_list,     only: ndet, ldet, IPD, JPD, KPD, NPD
-      Use ndef_list,     only: ndef, ldef, IPF, JPF, KPF, NPF
       Use term_exp,      only: kt1, kdt1, ILT1, IST1, MLT, MST, &
                                kt2, kdt2, ILT2, IST2, &
                                IM_det1, IS_det1, &

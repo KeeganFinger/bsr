@@ -56,9 +56,6 @@
       Idet_fact=0; if(kd.eq.0) Return
 
       NP(1:kd)=N3(1:kd)*ibf + N4(1:kd)
-!      print *, 'ibf,kd,NSYM', ibf, kd, NSYM
-!      print *, 'N3', N3
-!      print *, 'N4', N4
 
       k=ISORT(kd,NP)
 

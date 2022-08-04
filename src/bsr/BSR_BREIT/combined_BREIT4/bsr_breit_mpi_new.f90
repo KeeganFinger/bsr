@@ -67,7 +67,6 @@
 
       if(myid.eq.0) then
         open(pri,file=AF_p)
-        write(*,'(a,i6)') 'nprocs = ', nprocs
         write(pri,'(a,i6)') 'nprocs = ', nprocs
         Allocate(proc_status(nprocs)); proc_status=0
       end if
