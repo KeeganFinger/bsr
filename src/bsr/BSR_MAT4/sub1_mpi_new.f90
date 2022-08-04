@@ -1,5 +1,5 @@
 !======================================================================
-      Subroutine SUB1_MPI
+      Subroutine SUB1
 !======================================================================
 !     drive routine for one partial wave
 !----------------------------------------------------------------------
@@ -191,7 +191,7 @@
         if(interrupt.eq.0) Call Target_print(pri,Eps_tar)
       end if
 
-    End Subroutine SUB1_MPI
+    End Subroutine SUB1
 
 
 
