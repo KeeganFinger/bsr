@@ -177,7 +177,7 @@
          'Checking overlap matrix: s_ovl =', s_ovl,'   k =',k
       if(k.gt.0) go to 1
 
-      if(allocated(overlap_vals)) Deallocate(overlap_vals)
+      if(allocated(overlaps)) Deallocate(overlaps)
 
       Call Record_matrix
 

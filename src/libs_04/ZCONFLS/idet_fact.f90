@@ -20,8 +20,6 @@
       Integer :: np(2*ne),n1(2*ne),n2(2*ne),n3(2*ne),n4(2*ne)     
       Integer, external :: Iadd_ndet, Iadd_ndef, ISORT
 
-      NP = 0; N1 = 0; N2 = 0; N3 = 0; N4 = 0;
-
       kd = 0
       Do is = 1,NSYM
 

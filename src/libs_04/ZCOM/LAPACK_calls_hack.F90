@@ -40,14 +40,14 @@
       istat = cusolverDnDpotrf_buffersize(handle, iuplo, &
                      n, A, lda, lwork)
       if (istat.ne.0) write(*,*) &
-        'LAP_DPOTRF: DPOTRF(lapack) cusolver gives ISTAT = ',istat
+        'LAP_DSYEV: DSYEV(lapack) cusolver gives ISTAT = ',istat
 
       allocate(work(lwork))
 
       istat = cusolverDnDpotrf(handle, iuplo, n, A, lda, &
                     work, lwork, devInfo(1))
       if (istat.ne.0) write(*,*) &
-        'LAP_DPOTRF: DPOTRF(lapack) cusolver gives ISTAT = ',istat
+        'LAP_DSYEV: DSYEV(lapack) cusolver gives ISTAT = ',istat
 
       INFO = devInfo(1)
       deallocate(work)
@@ -56,8 +56,7 @@
       Call DPOTRF(UPLO,n,A,lda,INFO)
 
 #endif
-      if(INFO.ne.0) write(*,*) &
-        'LAP_DPOTRF: DPOTRF(lapack) gives INFO = ',INFO
+      if(INFO.ne.0) write(*,*) 'LAP_DSYEV: DSYEV(lapack) gives INFO = ',INFO
 
       End Subroutine LAP_DPOTRF
 
@@ -354,12 +353,12 @@
 
       Call DSYTRF(UPLO,n,A,m,IPIV,WORK,LWORK,INFO)
 
-      if(info.ne.0) write(*,*) 'LAP_INVS: DSYTRF give INFO =',INFO
+      if(info.ne.0) write(*,*) 'LAP_INV: DGETRF give INFO =',INFO
       if(info.ne.0) Return
 
       Call DSYTRI(UPLO,n,A,m,IPIV,WORK,INFO)
 
-      if(info.ne.0) write(*,*) 'LAP_INVS: DSYTRI give INFO =',INFO
+      if(info.ne.0) write(*,*) 'LAP_INV: DGETRI give INFO =',INFO
 
       End Subroutine LAP_INVS
 
@@ -387,8 +386,7 @@
 
       Call ZHEEV(job,UPLO,n,A,m,eval,WORK,lwork,RWORK,INFO)
 
-      if(INFO.ne.0) write(*,*) &
-        'LAP_ZHEEV ZHEEV(lapack) gives INFO = ',INFO
+      if(INFO.ne.0) write(*,*) ' ZHEEV(lapack) gives INFO = ',INFO
 
       End Subroutine LAP_ZHEEV
 

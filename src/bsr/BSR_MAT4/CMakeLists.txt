@@ -31,6 +31,6 @@ if(MPI_Fortran_FOUND)
    record_matrix_mpi.f90
    state_res_mpi.f90
    stop_mpi.f90
-   sub1_mpi_new.f90)
+   sub1_mpi.f90)
  target_link_libraries(bsr_mat4_mpi bsr_mpi bs zconfls zcom MPI::MPI_Fortran ${BLAS_LAPACK_LIBRARIES})
 endif()

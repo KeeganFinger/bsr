@@ -6,12 +6,12 @@
       Implicit none
    
       Integer :: mobs = 0      !  max.number of  overlaps
-!      Integer :: nobs = 0      !  curent number of overlaps
+      Integer :: nobs = 0      !  curent number of overlaps
       Integer :: kobs = 2**10  !  initial suggestion for mobs
 
 !     value of the bound-bound one-electron overlap:
 
-!      Real(8), allocatable :: Cobs(:)
+      Real(8), allocatable :: Cobs(:)
 
 !     pointer to orbitals (iobs > = jobs):
 
@@ -26,7 +26,6 @@
 !     allocate, de-allocate or re-allocate arrays in given module
 !----------------------------------------------------------------------
       Use radial_overlaps
-      Use orb_overlaps
 
       Implicit none
       Integer, intent(in) :: m
@@ -68,7 +67,6 @@
 !     add new entry( or replace) in the ordered list of overlaps
 !----------------------------------------------------------------------
       Use radial_overlaps
-      Use orb_overlaps
 
       Implicit none
       Integer, intent(in) :: io,jo
@@ -117,7 +115,6 @@
 !     add new entry( or replace) in the ordered list of overlaps
 !----------------------------------------------------------------------
       Use radial_overlaps
-      Use orb_overlaps
 
       Implicit none
       Integer, intent(in) :: io
@@ -132,3 +129,76 @@
       nobs = k
 
       End Subroutine Idel_obs
+
+
+!======================================================================
+      Real(8) Function OBS(io,jo)
+!======================================================================
+!     find overlaps <io|jo>
+!----------------------------------------------------------------------
+      Use radial_overlaps
+
+      Implicit none
+      Integer, intent(in) :: io,jo
+      Integer :: i,j, k,l,m
+
+      i = max(io,jo)
+      j = min(io,jo) 
+
+! ... search position (m) for given overlap
+
+      k=1; l=nobs
+    1 if(k.gt.l) go to 2              
+      m=(k+l)/2
+      if    (i.lt.iobs(m)) then;     l = m - 1
+      elseif(i.gt.iobs(m)) then;     k = m + 1
+      else
+       if    (j.lt.jobs(m)) then;    l = m - 1
+       elseif(j.gt.jobs(m)) then;    k = m + 1
+       else
+        OBS=Cobs(m);  Return 
+       end if
+      end if
+      go to 1
+    2 OBS = 0.d0 
+
+      End Function OBS
+
+
+!======================================================================
+      Real(8) Function VDET (kd,N1,N2)
+!======================================================================
+!     calculate the value of overlap determinant for given orbitals
+!
+!     Calls:  DET
+!----------------------------------------------------------------------
+      Implicit none
+      Integer, intent(in) :: kd,N1(kd),N2(kd)
+      Integer :: i,j
+      Real(8) :: ADET(kd*kd)
+      Real(8), external :: DET, OBS
+
+      if(kd.eq.0) then                
+       VDET = 1.d0
+      elseif(kd.eq.1) then
+       VDET = OBS(N1(1),N2(1))
+      elseif(kd.eq.2) then
+       VDET = OBS(N1(1),N2(1))*OBS(N1(2),N2(2)) -  &
+              OBS(N1(1),N2(2))*OBS(N1(2),N2(1))
+      elseif(kd.eq.3) then
+       VDET = OBS(N1(1),N2(1))*OBS(N1(2),N2(2))*OBS(N1(3),N2(3)) +  &
+              OBS(N1(1),N2(2))*OBS(N1(2),N2(3))*OBS(N1(3),N2(1)) +  &
+              OBS(N1(1),N2(3))*OBS(N1(2),N2(1))*OBS(N1(3),N2(2)) -  &
+              OBS(N1(1),N2(3))*OBS(N1(2),N2(2))*OBS(N1(3),N2(1)) -  &
+              OBS(N1(1),N2(2))*OBS(N1(2),N2(1))*OBS(N1(3),N2(3)) -  &
+              OBS(N1(1),N2(1))*OBS(N1(2),N2(3))*OBS(N1(3),N2(2)) 
+      else                
+       Do i=1,kd;  Do j=1,kd
+         adet((i-1)*kd+j)=OBS(N1(i),N2(j))
+       End do; End do
+       VDET = DET(kd,adet)      
+      end if
+
+      End Function VDET
+
+

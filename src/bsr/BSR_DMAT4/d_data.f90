@@ -32,8 +32,6 @@
       Real(8) :: v(ns),w(ns), v1(ns),v2(ns), w1(ns),w2(ns), &
 	                xl(ns,ks+ks-1),xv(ns,ks+ks-1)
 
-      write(*,*) 'itype =',itype,ncdata
-
       Select Case(itype)
 
       Case(1)                            !  d( . .)  ic, jc                             

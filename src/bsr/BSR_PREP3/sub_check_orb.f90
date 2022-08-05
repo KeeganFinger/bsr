@@ -52,30 +52,30 @@
 
 ! ...  define overlaps with existing orbitals:
 
-       OBS_arr(:,m) = 0.d0
+       OBS(:,m) = 0.d0
        Do i = 1,m
         if(lbs(i).ne.lbs(m)) Cycle
-        OBS_arr(i,m)=QUADR(i,m,0)
-        OBS_arr(m,i)=OBS_arr(i,m)
+        OBS(i,m)=QUADR(i,m,0)
+        OBS(m,i)=OBS(i,m)
        End do
 
 !----------------------------------------------------------------------
 ! ...  compare with the existing orbitals:
        
        SM1 = QUADR(m,m, 1); SM2 = QUADR(m,m, 2)
-       Do i = 1,nbf;     if(abs(OBS_arr(i,m)).lt.eps_ovl) Cycle
+       Do i = 1,nbf;     if(abs(OBS(i,m)).lt.eps_ovl) Cycle
 
         ! ... check orthogonality to core: 
 
         if(i.le.nclosd.and.ii.gt.nclosd) then
          write(pri,'(a,a,a,a,a,f12.8)') ' file ', trim(AFC), '  orbital ', &
-               elw, ' does not orthogonal to core:', OBS_arr(i,m)
+               elw, ' does not orthogonal to core:', OBS(i,m)
          Stop 'problem with orthogonality to core'
         end if
 
         ! ... define if it is approximately the same orbital:
 
-        S  = abs(OBS_arr(i,m)-1.d0);      if(S .gt.eps_ovl) Cycle
+        S  = abs(OBS(i,m)-1.d0);      if(S .gt.eps_ovl) Cycle
         S1 = abs(QUADR(i,i, 1)-SM1);  if(S1.gt.eps_ovl) Cycle
         S2 = abs(QUADR(i,i, 2)-SM2);  if(S2.gt.eps_ovl) Cycle
 

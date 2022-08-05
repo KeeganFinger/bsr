@@ -11,18 +11,18 @@
       nbs(m)=nbs(ii); lbs(m)=lbs(ii); kbs(m)=kbs(ii); ebs(m)=ebs(ii)
       mbs(m)=mbs(ii); p(:,m) = p(:,ii)
 
-       OBS_arr(:,m) = 0.d0
+       OBS(:,m) = 0.d0
        Do i = 1,m
         if(lbs(i).ne.lbs(m)) Cycle
-        OBS_arr(i,m)=QUADR(i,m,0)
-        OBS_arr(m,i)=OBS_arr(i,m)
+        OBS(i,m)=QUADR(i,m,0)
+        OBS(m,i)=OBS(i,m)
        End do
 
 ! ... check if we need orthogonalization:
 
       jj = ii
       Do i=1,nbf; if(iech(i).ne.1) Cycle
-       S = OBS_arr(i,m); if(abs(S).lt.eps_ovl) Cycle           
+       S = OBS(i,m); if(abs(S).lt.eps_ovl) Cycle           
        p(:,m) = p(:,m) - S * p(:,i);  jj=m
        mbs(m) = max(mbs(i),mbs(m))
       End do
@@ -31,11 +31,11 @@
 
        S = QUADR(m,m,0);  S=sqrt(S);  p(:,m)=p(:,m)/S  
 
-       OBS_arr(:,m) = 0.d0
+       OBS(:,m) = 0.d0
        Do i = 1,m
         if(lbs(i).ne.lbs(m)) Cycle
-        OBS_arr(i,m)=QUADR(i,m,0)
-        OBS_arr(m,i)=OBS_arr(i,m)
+        OBS(i,m)=QUADR(i,m,0)
+        OBS(m,i)=OBS(i,m)
        End do
 
 ! ... assign set index for new sub. orbital: 

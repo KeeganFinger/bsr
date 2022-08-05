@@ -1,5 +1,5 @@
 !======================================================================
-      Subroutine Record_matrix_mpi(nu)
+      Subroutine Record_matrix(nu)
 !======================================================================
 !     collect and record of overlap matrix
 !----------------------------------------------------------------------
@@ -82,5 +82,5 @@
 
       if(myid.eq.0) write(nu) -1,-1
 
-      End Subroutine Record_matrix_mpi
+      End Subroutine Record_matrix
 

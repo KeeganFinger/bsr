@@ -7,7 +7,7 @@ set(ZCOM_SOURCES
   MOD_after.f90            MOD_new_dets.f90         MOD_new_defs.f90
   MOD_dip.f90              MOD_obs_new.f90
   MOD_file.f90             det_fact_new.f90
-  MOD_c_blocks.f90	   MOD_coef.f90		    #MOD_orb_overlaps.f90
+  MOD_c_blocks.f90	   MOD_coef.f90		    MOD_orb_overlaps.f90
   angs_air.f90             ANG_dj_fact.f90          ANG_itra.f90
   ANG_kappa.f90            ANG_t_ls_jk.f90          ANG_zcklm.f90
   ANG_zclkl.f90            ANG_z_3j.f90             ANG_z_6j.f90

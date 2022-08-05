@@ -20,7 +20,6 @@
       Integer, allocatable :: iech(:)  !  additional pointer
     
       CHARACTER(4), allocatable :: ebs(:) ! spectroscopic notation
-      Integer, allocatable :: chan(:)   ! channel index (i =0 -> no channel associated)
 
 ! ... B-spline expansion coefficients:
 
@@ -29,7 +28,7 @@
 ! ... convolution with B-overlaps: 
 
       Real(8), allocatable :: QBS(:,:) 
-      Real(8), allocatable :: OBS_arr(:,:)
+      Real(8), allocatable :: OBS(:,:)
 
 ! ... memory requirements (in 4b words):
 
@@ -67,20 +66,20 @@
       if(m.le.0) then
       
        if(Allocated(NBS)) &
-         Deallocate (NBS,LBS,KBS,MBS,iech,EBS,PBS,QBS,OBS_arr)
+         Deallocate (NBS,LBS,KBS,MBS,iech,EBS,PBS,QBS,OBS)
          nbf = 0;  mbf = 0
       
       elseif(m.gt.mbf.and.nbf.eq.0) then
 
        if(Allocated(nbs)) & 
-          Deallocate (nbs,lbs,kbs,mbs,iech,ebs,PBS,QBS,OBS_arr)
+          Deallocate (nbs,lbs,kbs,mbs,iech,ebs,PBS,QBS,OBS)
        
        mbf = m
        Allocate(nbs(mbf),lbs(mbf),kbs(mbf),ebs(mbf),mbs(1:mbf), &
                 iech(1:mbf),PBS(1:ns,1:mbf), QBS(1:ns,1:mbf), &
-                OBS_arr(1:mbf,1:mbf))
+                OBS(1:mbf,1:mbf))
        nbs = 0; lbs = 0; kbs = 0; ebs = '****'; mbs = 0; iech = 0
-       PBS = 0.d0; QBS = 0.d0; OBS_arr = 0.d0
+       PBS = 0.d0; QBS = 0.d0; OBS = 0.d0
 
       elseif(nbf.gt.0.and.m.gt.mbf) then
 
@@ -198,20 +197,4 @@
 
       End function Iadd_bsorb
 
-!======================================================================
-      Integer Function IBORT(io,jo)
-!======================================================================
-!     recover old definition IBORT
-!----------------------------------------------------------------------
-      Use spline_orbitals
 
-      Implicit none
-      Integer, intent(in) :: io,jo
-      Real(8), external :: OBS
-
-      if(chan(io).eq.0.and.chan(jo).eq.0) &
-        Call Stop_mpi (0,0,'IBORT for bound orbitals?')
-
-      IBORT = NINT(OBS(io,jo))
-
-      End Function IBORT

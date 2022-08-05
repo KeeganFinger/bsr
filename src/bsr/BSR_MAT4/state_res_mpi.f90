@@ -196,7 +196,7 @@
        interrupt = nnbuf; intercase=icase
        if(pri.gt.0)  write(pri,'(/a,3i10)') &
          'Interrupt, intercase, nnbuf:',interrupt,intercase,nnbuf
-       Call Record_matrix_mpi
+       Call Record_matrix
        if(myid.eq.0) then
         if(icase.eq.11) write(nuj) 0,0
         write(nuj) mk

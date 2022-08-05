@@ -3,8 +3,7 @@
 !======================================================================
 !     allocate, de-allocate or re-allocate arrays in given module
 !----------------------------------------------------------------------
-      Use overlaps
-      Use spline_orbitals, only: chan
+      Use orb_overlaps
 
       Implicit none
       Integer, intent(in) :: nbf,lbs(nbf),iech(nbf),ncore

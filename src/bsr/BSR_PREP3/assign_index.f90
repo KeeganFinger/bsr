@@ -16,7 +16,7 @@
         S=0.d0           
         Do i = 1,nbf
          if(lbs(m).ne.lbs(i).or.k.ne.kbs(i)) Cycle
-         S=max(S,abs(OBS_arr(i,m)))
+         S=max(S,abs(OBS(i,m)))
         End do
         if(S.lt.eps_ovl) then; kbs(m)=k; Exit; end if
        End do  

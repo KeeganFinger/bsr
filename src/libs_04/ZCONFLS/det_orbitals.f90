@@ -19,7 +19,7 @@
 !----------------------------------------------------------------------
 ! ... exzaust the 1-st configuration:
 
-      ksym1=1; k1=0; IPsym1=0
+      ksym1=1; k1=0
 
       Do i = 1,ne 
        if(ksym1(i).eq.0) Cycle

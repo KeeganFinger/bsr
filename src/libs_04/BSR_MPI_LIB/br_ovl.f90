@@ -4,8 +4,8 @@
 !     broadcast data from  module spline_orbitals
 !======================================================================
       Use MPI
-      Use overlaps
-      Use spline_orbitals
+      Use orb_overlaps
+!      Use spline_orbitals
 
       Implicit none
       Integer :: myid,ierr

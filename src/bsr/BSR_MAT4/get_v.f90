@@ -11,7 +11,6 @@
       Real(8) :: v(ns), S
       Integer :: i,j, i1,i2, ich
       Integer, external :: IBORT   
-      Real(8), external :: OBS
 
       if(IBORT(kl,nl).eq.0) then
        write(*,'(2a6,10i5)') &
