@@ -27,6 +27,7 @@
       Call MPI_BCAST(ltarg ,ntarg,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
       Call MPI_BCAST(jtarg ,ntarg,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
       Call MPI_BCAST(istarg,ntarg,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+      Call MPI_BCAST(ictarg,ntarg,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
       Call MPI_BCAST(iptarg,ntarg,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
       Call MPI_BCAST(nctarg,ntarg,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
       Call MPI_BCAST(nwtarg,ntarg,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)

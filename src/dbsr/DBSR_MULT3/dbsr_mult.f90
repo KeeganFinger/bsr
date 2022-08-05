@@ -100,8 +100,8 @@
 
 ! ...  rename new results as new data bank (int_res -> jnt_bnk): 
  
-       AF = 'move '; i = 5               !  Windows
-!       AF = 'mv ';   i = 3               !  UNIX
+!       AF = 'move '; i = 5               !  Windows
+       AF = 'mv ';   i = 3               !  UNIX
 
        ii = LEN_TRIM(AF_res); AF(i+1:i+ii)=AF_res; i=i+ii+1
        ii = LEN_TRIM(AF_bnk); AF(i+1:i+ii)=AF_bnk; i=i+ii

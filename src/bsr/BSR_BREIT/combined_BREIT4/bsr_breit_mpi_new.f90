@@ -52,129 +52,93 @@
 !
 !---------------------------------------------------------------------
       Use MPI
-
       Use bsr_breit
-      USE conf_LS,      only: ne
-      Use symc_list_LS, only: nsymc
-      Use term_exp,     only: ic_case
+      Use conf_LS,      only: ne
+      Use ndet_list,    only: ndet,ldet
+      Use ndef_list,    only: ndef,ldef
 
       Implicit none
-      Integer :: l,mls_max
-
-!----------------------------------------------------------------------
-! ... initialize MPI:
+      Integer :: i,ii,l,ml,mls_max
+      Real(8) :: tt1,tt2, ttt, total_time
 
       Call MPI_INIT(ierr)
       Call MPI_COMM_RANK(MPI_COMM_WORLD, myid, ierr)
       Call MPI_COMM_SIZE(MPI_COMM_WORLD, nprocs, ierr)
 
       if(myid.eq.0) then
-       open(pri,file=AF_p)
-       write(*,'(a,i6)') 'nprocs = ', nprocs
-       write(pri,'(a,i6)') 'nprocs = ', nprocs
-       Allocate(ip_proc(nprocs)); ip_proc=0
+        open(pri,file=AF_p)
+        write(pri,'(a,i6)') 'nprocs = ', nprocs
+        Allocate(proc_status(nprocs)); proc_status=0
       end if
 
-      t0 = MPI_WTIME()
-!----------------------------------------------------------------------
-! ... read arguments from command line:
-
-      if(myid.eq.0) Call Read_arg;
+! ... Read and broadcast command line arguments
+      if(myid.eq.0) then
+        Open(pri,file=AF_p)
+        write(pri,'(/20x,a/20x,a/20x,a/)') &
+               '=====================================',     &
+               ' CALCULATION OF ANGULAR COEFFICIENTS ',     &
+               '====================================='
+        Call Read_arg
+      endif
       Call br_arg
 
-! ... log - file:
+      total_time = 0.0d0
+      Do klsp = klsp1, klsp2
+        tt1 = MPI_WTIME()
 
-      if(myid.eq.0) then
-        write(pri,'(/20x,a/20x,a/20x,a/)') &
-             '=======================',     &
-             ' B R E I T - P A U L I ',     &
-             '======================='
-        write(pri,'(/a,i3)')     'Max.multipole index =',mk
-        write(pri,'(/a,E10.1/)') 'Tollerance for coeff.s =',eps_c
-      end if
+        if(myid.eq.0) then
+          write(pri,'(80(''-''))')
+          write(pri,'(/a,i5)') 'Partial wave: ',klsp
+          write(*  ,'(/a,i5)') 'Partial wave: ',klsp
+          Call open_c_file
+          Call open_int_inf
+          if(new.eq.1) then
+            write(pri,'(/a)') 'It is new calculations'
+          else
+            write(pri,'(/a)') 'It is continued calculations'
+          endif
+        endif
 
-!----------------------------------------------------------------------
-!                                             cycle over partial waves:
-      Do klsp = klsp1,klsp2
+! ... Read configuration list
+        if(myid.eq.0) Call read_conf
 
-       t1 = MPI_WTIME()
+        Call MPI_BCAST(ne,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+        Call MPI_BCAST(icalc,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+        if(icalc.eq.0) cycle
 
-! ... open relavent files:
+! ... Extract old results
+        if(myid.eq.0) then
+          Call Read_dets(nub,new)
+          Call def_maxl(l)
+          mls_max=4*l+2
+        endif
 
-       if(myid.eq.0) then
-        Call open_c_file
-        Call open_int_inf
-        write(pri,'(80(''-''))')
-        write(pri,'(/a,i5/)') ' Partial wave: ',klsp
-        if(new.eq.1) write(pri,'(a/)') ' It is new calculations '
-        if(new.eq.0) write(pri,'(a/)') ' It is continued calculations '
-       end if
+        Call MPI_BCAST(mls_max,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
 
-! ... read the configuration list:
+        Call Alloc_spin_orbitals(ne,mls_max)
 
-       if(myid.eq.0) Call Read_conf
+! ... Prepare det expansions
 
-       Call MPI_BCAST(icalc,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+        if(myid.eq.0) then
+          Call open_det_exp
+          Call open_int_int
+        endif
 
-       if(icalc.eq.0) Cycle
+! ... Calculate angular symmetry coefficients
+        Call MPI_BARRIER(MPI_COMM_WORLD,ierr)
+        if(myid.eq.0) Call conf_loop_MPI
+        if(myid.ne.0) Call conf_calc_MPI
 
-       Call MPI_BCAST(ne,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+! ... Record results and runtime data
+        if(myid.eq.0) Call record_results
 
-       if(myid.eq.0) then
-         Call Def_maxl(l)
-         mls_max=4*l+2
-       end if
+        t2=MPI_WTIME()
+        if(myid.eq.0) write(pri,'(/a,F12.2,a)') &
+          'Partial wave:',(t2-t1)/60,' min'
 
-       Call MPI_BCAST(mls_max,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-
-       Call Alloc_spin_orbitals(ne,mls_max)
-
-! ... extract old results:
-
-       if(myid.eq.0) Call Read_dets(nub,new)
-
-! ... prepare det. expantions:
-
-       if(myid.eq.0) Call open_det_exp
-
-       Call MPI_BARRIER(MPI_COMM_WORLD, ierr)
-
-       t2=MPI_WTIME()
-       if(myid.eq.0) &
-       write(pri,'(/a,F12.2,a)') 'Prep_det is done:',(t2-t1)/60,' min'
-
-       Call open_int_int
-
-! ... calculations for new angular symmetries:
-
-       if(myid.eq.0)     Call Conf_loop
-       if(myid.gt.0)     Call Conf_calc
-
-! ... record results:
-
-       if(myid.eq.0) then
-
-        write(pri,'(/a)') ' Record results:'
-
-        Call Record_results
-
-       end if
-
-! ... time for one partial wave:
-
-       t2=MPI_WTIME()
-       if(pri.gt.0) &
-       write(pri,'(/a,F12.2,a)') ' Partial wave:',(t2-t1)/60,' min'
-
-      End do  ! over klsp
-
-      if(debug.gt.0) Call Debug_printing
-
+      enddo
       Call MPI_FINALIZE(l)
-
-      End ! Program BSR_BREIT_MPI
-
-
+      End
 
 !======================================================================
       Subroutine Read_dets(nub,new)
@@ -202,11 +166,6 @@
       Use def_list
 
       Implicit none
-!      Character AS*80
-!      Integer :: i, ii, nc
-
-
-!      close(nur)
 
       rewind(nub)
       Call Write_symc_LS(nub)
@@ -232,6 +191,9 @@
           ' number of overlap factors      =', ndef,adef,ldef
       write(pri,'(a,i10)') &
           ' new coeff.s                    =', nc_new
+
+      close(nub)
+      close(nur)
 
 
       End Subroutine Record_results

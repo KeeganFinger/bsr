@@ -27,6 +27,7 @@
       Character(5) :: EL
       Character(40) :: AF,BF
       Real(8), allocatable ::  R(:),P(:),Q(:)
+      Real(8) :: nuc_charge
 
 ! ... input data: 
          
@@ -44,10 +45,15 @@
        Stop ' '
       end if
 
+      if(iarg.eq.3) then
+        Call read_rarg('nuc_charge',nuc_charge)
+        Call read_rarg('awt',awt)
+      endif
+
 ! ... set up B-splines:
  
       Call Check_file('knot.dat')
-      Call def_grid
+      Call def_grid('knot.dat',AF,nuc_charge,awt)
       Call alloc_DBS_gauss
 !      Call alloc_DBS_galerkin
 

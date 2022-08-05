@@ -16,10 +16,10 @@
       if(nbf.eq.0) Return
 
       if(myid.ne.0) then
-       if(Allocated(nbs)) & 
-        Deallocate (nbs,lbs,kbs,mbs,iech,ebs,PBS,QBS)
-       mbf = nbf
-       Allocate(nbs(mbf),lbs(mbf),kbs(mbf),ebs(mbf),mbs(1:mbf), &
+        if(Allocated(nbs)) & 
+          Deallocate (nbs,lbs,kbs,ebs,mbs,iech,PBS,QBS)
+        mbf = nbf
+        Allocate(nbs(mbf),lbs(mbf),kbs(mbf),ebs(mbf),mbs(1:mbf), &
                 iech(1:mbf),PBS(1:ns,1:mbf),QBS(1:ns,1:mbf))
       end if
 

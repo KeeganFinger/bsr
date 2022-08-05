@@ -52,8 +52,8 @@
 !---------------------------------------------------------------------
       Use bsr_breit
       Use conf_LS,      only: ne
-      Use det_list,     only: ndet,ldet
-      Use def_list,     only: ndef,ldef
+      Use ndet_list,    only: ndet,ldet
+      Use ndef_list,    only: ndef,ldef
 
       Implicit none
       Integer :: i,ii,l,ml
@@ -122,24 +122,13 @@
 
        Call Record_int_inf
 
-! ... print some main dimensions:
-
-!       write(pri,'(/a/)') &
-!          'Results for new angular symmetry calculations:'
-!       write(pri,'(a,i10,f10.1)') &
-!          'number of overlap determinants =', ndet,ldet
-!       write(pri,'(a,i10,f10.1)') &
-!          'number of overlap factors      =', ndef,ldef
-!       write(pri,'(a,i10,f10.1)') &
-!          'new ang. coeff.s               =', nc_new
-
 ! ... time for one partial wave:
 
        Call CPU_TIME(tt2); ttt=(tt2-tt1)/60
        write(pri,'(/a,T13,F12.2,a)') 'Partial wave:',ttt,' min'
        write(*,  '(/a,T13,F12.2,a)') 'Partial wave:',ttt,' min'
        total_time = total_time + ttt
-       Close(nud,status='DELETE')
+!       Close(nud,status='DELETE')
 
       End do  ! over klsp
 
