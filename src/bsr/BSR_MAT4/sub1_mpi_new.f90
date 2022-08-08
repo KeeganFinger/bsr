@@ -3,6 +3,7 @@
 !======================================================================
 !     drive routine for one partial wave
 !----------------------------------------------------------------------
+      Use MPI
       Use bsr_mat
       Use c_data
       Use conf_LS
@@ -34,7 +35,6 @@
       Call br_dets
       Call br_ovl
       Call MPI_BCAST(mbf,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-      print *, myid, 'broadcast OBS', mbf
       if(.not.allocated(OBS)) allocate(OBS(mbf,mbf))
       Call MPI_BCAST(OBS,mbf*mbf,MPI_DOUBLE_PRECISION,&
         0,MPI_COMM_WORLD,ierr)
@@ -121,7 +121,7 @@
         write(*,'( a,T20,f10.2,a)') 'BS_ORTH:',(t4-t3)/60,' min '
       endif
 
-      Call Record_matrix_mpi(nuj)
+10    Call Record_matrix_mpi(nuj)
 
       if(interrupt.eq.0) Call SUB1_ACF
 
@@ -172,7 +172,7 @@
       Call Gen_Zval(l)
 
       icase=7
-      Call State_res
+      Call State_res_mpi
       Call Alloc_zcore(0,0)
 
       End Subroutine SUB1_Zintegrals
@@ -195,7 +195,7 @@
           case(3,4); if(moo .eq.-1.or.(mrel.lt.5.and.moo .ne.1)) Cycle
         End Select
 
-        Call State_res
+        Call State_res_mpi
 
         if(interrupt.gt.0) Return
 
@@ -242,7 +242,7 @@
         rewind(nuj)
         write(nuj) ns,nch,npert
       endif
-      Call Record_matrix(nuj)
+      Call Record_matrix_mpi(nuj)
 
 ! ... Interaction matrix:
 
@@ -268,7 +268,7 @@
 
 ! ... record interaction matrix:
 
-      Call Record_matrix(nuj)
+      Call Record_matrix_mpi(nuj)
 
 ! ... asymptotic coefficients:
 
@@ -300,7 +300,7 @@
       if(interrupt.gt.0.and.intercase.ne.11) then
         rewind(nuj)
         write(nuj) ns,nch,npert
-        Call Record_matrix(nuj)
+        Call Record_matrix_mpi(nuj)
         Return
       end if
 
@@ -349,7 +349,7 @@
         rewind(nuj)
         write(nuj) ns,nch,npert
       endif
-      Call Record_matrix(nuj)
+      Call Record_matrix_mpi(nuj)
 
       End Subroutine SUB1_overlaps
 
@@ -444,12 +444,12 @@
 
       mm = 0
 
-      if(pri.gt.0) write(pri,'(/a/)') 'Memory consuming:'
+      if(myid.eq.0) write(pri,'(/a/)') 'Memory consuming:'
 
 ! ... the < i | j > arrays:
 
       m = mem_orb_overlaps
-      if(pri.gt.0) &
+      if(myid.eq.0) &
       write(pri,'(a,T33,f8.1,a)') 'Bound overlaps:', m*4.0/(1024*1024),'  Mb'
       mm = mm + m
 
@@ -462,7 +462,7 @@
        write(pri,'(/a,i8,a)') 'nblock = ',nblock,'  -  number of blocks re-assigned !!! '
       end if
       Call Alloc_c_data(mtype,-1,npol,mblock,nblock,kblock,eps_c,m)
-      if(pri.gt.0) &
+      if(myid.eq.0) &
       write(pri,'(a,T33,f8.1,a)')  'Memory for c_data:', m*4.0/(1024*1024),'  Mb'
       mm = mm + m
 
@@ -471,19 +471,19 @@
       if(.not.allocated(CBUF)) &
       Allocate(CBUF(maxnc),itb(maxnc),jtb(maxnc),intb(maxnc),idfb(maxnc))
       m = 6*maxnc
-      if(pri.gt.0) write(pri,'(a,T33,f8.1,a)') 'Buffer memory:', m*4.0/(1024*1024),'  Mb'
+      if(myid.eq.0) write(pri,'(a,T33,f8.1,a)') 'Buffer memory:', m*4.0/(1024*1024),'  Mb'
       mm = mm + m
 
 ! ... splines:
 
       m = memory_splines()
-      if(pri.gt.0)  write(pri,'(a,T33,f8.1,a)') 'B-splines arrays:',m*4.0/(1024*1024),'  Mb'
+      if(myid.eq.0)  write(pri,'(a,T33,f8.1,a)') 'B-splines arrays:',m*4.0/(1024*1024),'  Mb'
       mm = mm + m
 
 ! ... configurations;
 
       m = m_symc + m_symt + m_conf_LS + ncfg
-      if(pri.gt.0)  write(pri,'(a,T33,f8.1,a)') 'Configurations:',m*4.0/(1024*1024),'  Mb'
+      if(myid.eq.0)  write(pri,'(a,T33,f8.1,a)') 'Configurations:',m*4.0/(1024*1024),'  Mb'
       mm = mm + m
 
 ! ... interaction matrix:
@@ -493,7 +493,7 @@
       Call MPI_REDUCE(i,m,1,MPI_INTEGER,MPI_MAX,0,MPI_COMM_WORLD,ierr)
       if(myid.ne.0) m=i
       mm = mm + m
-      if(pri.gt.0)  write(pri,'(a,T33,f8.1,a)') 'Total estimations: ',mm*4.0/(1024*1024),'  Mb'
+      if(myid.eq.0)  write(pri,'(a,T33,f8.1,a)') 'Total estimations: ',mm*4.0/(1024*1024),'  Mb'
 
 ! ... the < . | j > values: 
 

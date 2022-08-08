@@ -92,10 +92,13 @@
        Call R_closed(nuc)
        kclosd=nclosd    
        Call Bcore
-       write(prj,'(/a,i4,a)') 'nclosd  =',nclosd,' - common core shells'
-       write(prj,'(/a,F15.8,a)') 'Bcore   =', EC,'  -  calculated core energy'
+       write(prj,'(/a,i4,a)') &
+        'nclosd  =',nclosd,' - common core shells'
+       write(prj,'(/a,F15.8,a)') &
+        'Bcore   =', EC,'  -  calculated core energy'
        Call Read_rpar(nup,'Ecore',EC)
-       write(prj,'(/a,F15.8,a)') 'Ecore   =', EC,'  -  Used core energy'
+       write(prj,'(/a,F15.8,a)') &
+        'Ecore   =', EC,'  -  Used core energy'
       end if
       Call br_core
 

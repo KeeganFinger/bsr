@@ -44,8 +44,8 @@
 ! ... General output
       if(myid.eq.0) Call bsr_mat_inf
       if(myid.eq.0) then
-        open(pri,file=AF_p)
-        write(pri,'(a,i6)') 'nprocs = ', nprocs
+        open(prj,file=AF_prj)
+        write(prj,'(a,i6)') 'nprocs = ', nprocs
       end if
 
 ! ... Prepare B-spline

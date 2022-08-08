@@ -29,7 +29,7 @@
       Real(8) :: v(ns), y(ns,ns),xx(ns,ns),yy(ns,ns),zz(ns,ns)
       Integer, external :: IBORT
 
-      if(pri.gt.0) write(pri,'(/a/)') 'Orthogonal conditions:'
+      if(myid.eq.0) write(pri,'(/a/)') 'Orthogonal conditions:'
 
       Do ich = 1,nch; if(my_channel(ich).le.0) Cycle; i = ipch(ich)
 
@@ -45,7 +45,7 @@
         nort = nort + 1 
         write(line(iline:),'(a5)') EBS(j); iline=iline+5
         if(iline.gt.275) then
-         if(pri.gt.0) write(pri,'(a)') trim(line); iline=11
+         if(myid.eq.0) write(pri,'(a)') trim(line); iline=11
         end if
         v = pbs(:,j)
         Do ii=1,ns; Do jj=1,ns
@@ -54,7 +54,7 @@
 
        End do
        if(nort.eq.0) Cycle
-       if(iline.gt.11.and.pri.gt.0) write(pri,'(a)') trim(line)
+       if(iline.gt.11.and.myid.eq.0) write(pri,'(a)') trim(line)
 
 ! ...  channel - channel block
 

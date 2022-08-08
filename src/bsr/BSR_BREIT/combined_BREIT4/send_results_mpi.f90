@@ -47,10 +47,10 @@
       Call MPI_SSEND(JPF,idef,MPI_INTEGER,0,23,MPI_COMM_WORLD,ierr)
       Call MPI_SSEND(NPF,idef,MPI_INTEGER,0,24,MPI_COMM_WORLD,ierr)
 
-      ndet = 0
-      ldet = 0
-      ndef = 0
-      ldef = 0
-      IPF = 0;
+!      ndet = 0
+!      ldet = 0
+!      ndef = 0
+!      ldef = 0
+!      IPF = 0;
 
       End Subroutine send_results_MPI
