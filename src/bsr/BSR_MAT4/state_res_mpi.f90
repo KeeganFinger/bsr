@@ -1,5 +1,5 @@
 !======================================================================
-      Subroutine State_res
+      Subroutine State_res_mpi
 !======================================================================
 !     extract and proceed the data from INT.BNK for specific integrals
 !----------------------------------------------------------------------
@@ -174,7 +174,7 @@
 
 ! ... generation of interaction matrix:
 
-      if(myid.gt.0.and.pri.gt.0) write(pri,*) 'nccoef =',nccoef
+      if(myid.eq.0) write(pri,*) 'nccoef =',nccoef
       Do kpol = kpol1,kpol2
        Do itype = 1,ntype
         Call Add_matrix(itype,kpol)
@@ -182,21 +182,18 @@
       End do
 
       t2 =  MPI_WTIME()
-      if(myid.gt.0.and.pri.gt.0)  write(pri,'(a,i4,T20,f10.1,a)') &
+      if(myid.eq.0)  write(pri,'(a,i4,T20,f10.1,a)') &
                   'Bufer:',nnbuf,(t2-t1)/60,' min'
 
       Call MPI_BARRIER(MPI_COMM_WORLD, ierr)
 
       t2 =  MPI_WTIME()
 
-      if(myid.eq.0.and.pri.gt.0)  write(pri,'(a,i4,T20,f10.1,a)') &
-                  'Bufer:',nnbuf,(t2-t1)/60,' min'
-
       if( time_delay.gt.0.and.(t2-time0)/60 .gt. time_delay) then 
        interrupt = nnbuf; intercase=icase
-       if(pri.gt.0)  write(pri,'(/a,3i10)') &
+       if(myid.eq.0)  write(pri,'(/a,3i10)') &
          'Interrupt, intercase, nnbuf:',interrupt,intercase,nnbuf
-       Call Record_matrix
+       Call Record_matrix_mpi
        if(myid.eq.0) then
         if(icase.eq.11) write(nuj) 0,0
         write(nuj) mk
@@ -211,7 +208,7 @@
 
       if(icase.eq.11) max_nbuf = nnbuf
 
-      End Subroutine State_res
+      End Subroutine State_res_mpi
 
 
 !======================================================================
@@ -414,7 +411,8 @@
         elseif(io.lt.0) then
           jch=-io+nch
         else
-          Call Stop_mpi(0,0,'problems to extract channel for itype=2,3,4,5')
+          Call Stop_mpi&
+            (0,0,'problems to extract channel for itype=2,3,4,5')
         end if
 
       Case(6,7,8,9)                         

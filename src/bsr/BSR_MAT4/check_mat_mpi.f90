@@ -18,7 +18,7 @@
       Character(124) :: line
 
       met = 0
-      if(pri.gt.0) write(pri,'(/a,f6.3)') &
+      if(myid.eq.0) write(pri,'(/a,f6.3)') &
          'Check overlap matrix for big overlaps > s_ovl =',s_ovl
       line = ' '
 !----------------------------------------------------------------------      
@@ -46,7 +46,7 @@
         if(S.gt.S_ovl.and.IBORT(i,js).ne.0) then
          met = met + 1
 
-         if(pri.gt.0) &
+         if(myid.eq.0) &
          write(pri,'(a1,a4,a1,a4,a3,5x,a12,a6,5x,a12,a6,2f10.3)') &
          '<',elc(ich),'|',ebs(js),'>=0', &
          BFT(it),elc(ich), BFT(jt),elc(jch),S,S_ovl
@@ -71,7 +71,7 @@
         Do ii=1,nphys_sub; is=jp_sub(ii)  
          if(lch(ich).ne.lbs(is)) Cycle
          S = SUM(v(:)*pbs(:,is)); S = abs(S)
-         if(S.gt.S_ovl.and.pri.gt.0) &
+         if(S.gt.S_ovl.and.myid.eq.0) &
          write(pri,'(a1,a4,a1,a4,a3,5x,a12,a6,5x,a12,i6,2f10.3)') &
          '<',elc(ich),'|',ebs(is),'>=0', &
          BFT(it),elc(ich), 'perturber   ',kp,S,S_ovl
@@ -98,7 +98,7 @@
         Do i=1,npert; Do j=1,i; ij=imycase(i,j); if(ij.eq.0) Cycle
          S = abs(hbb(ij))
          if(S.gt.S_pert.and.i.ne.j) then
-          if(pri.gt.0) &
+          if(myid.eq.0) &
            write(pri,'(f10.5,2i5,a)') &
              S, i,j , ' - suspicious perturber overlap '
           is = ippert(i)-ippert(i-1)          
@@ -107,11 +107,11 @@
           i1=ippert(ii-1)+1+ipconf(nch)
           i2=ippert(ii)+ipconf(nch)         
           WC(i1:i2) = 0.d0
-          if(pri.gt.0) &
+          if(myid.eq.0) &
           write(pri,'(a,i5,a)') 'pertuber',ii,'  was removed !!!'
          end if
          if(S.lt.0.999.and.i.eq.j) then
-          if(pri.gt.0) &
+          if(myid.eq.0) &
           write(pri,'(f10.5,2i5,a)') &
           S, i,j , ' - suspicious perturber normalization '
          end if
