@@ -112,21 +112,21 @@
             exit !exit loop if data sent to a process
           enddo
 
-!          Call receive_results_MPI(proc,is_rec,js_rec)
-!          Call add_res(nur,is_rec,js_rec)
-!          Call add_it_oper(is_rec,js_rec)
-!          proc_status(proc) = 0
+          Call receive_results_MPI(proc,is_rec,js_rec)
+          Call add_res(nur,is_rec,js_rec)
+          Call add_it_oper(is_rec,js_rec)
+          proc_status(proc) = 0
 
           ! receive data if no processes available
-          if(send.eq.0) then
-            Call cache_data(0)
-            Call receive_results_MPI(proc,is_rec,js_rec)
-            Call add_res(nur,is_rec,js_rec)
-            Call add_it_oper(is_rec,js_rec)
-            proc_status(proc) = 0
-            Call cache_data(1)
-            go to 2
-          endif
+!          if(send.eq.0) then
+!            Call cache_data(0)
+!            Call receive_results_MPI(proc,is_rec,js_rec)
+!            Call add_res(nur,is_rec,js_rec)
+!            Call add_it_oper(is_rec,js_rec)
+!            proc_status(proc) = 0
+!            Call cache_data(1)
+!            go to 2
+!          endif
 
         enddo ! end inner configuration loop
 
