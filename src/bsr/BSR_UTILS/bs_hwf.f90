@@ -116,7 +116,8 @@
 !----------------------------------------------------------------------
 ! ... diagonalization of interaction matrix:
 
-      Call LAP_DSYGV('V','L',khm,nhm,hm,cm,cp,info)         
+!      Call LAP_DSYGV('V','L',khm,nhm,hm,cm,cp,info)         
+      Call LAP_DSYGV('V','L',khm,hm,nhm,cm,nhm,cp,info)
 
       write(pri,'(/75a1)') ('-',i=1,75)
       write(pri,'(/a,i5,a)') 'khm =',khm,' - final full size of matrix'      

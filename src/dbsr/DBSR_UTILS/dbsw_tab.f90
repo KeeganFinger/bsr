@@ -27,6 +27,7 @@
       Character(5) :: EL
       Character(40) :: AF,BF
       Real(8), allocatable ::  R(:),P(:),Q(:)
+      Real(8) :: nuc_charge
 
 ! ... input data: 
          
@@ -44,12 +45,17 @@
        Stop ' '
       end if
 
+      if(iarg.eq.3) then
+        Call read_rarg('nuc_charge',nuc_charge)
+        Call read_rarg('awt',awt)
+      endif
+
 ! ... set up B-splines:
  
       Call Check_file('knot.dat')
-      Call def_grid
+      Call def_grid('knot.dat',AF,nuc_charge,awt)
       Call alloc_DBS_gauss
-      Call alloc_DBS_galerkin
+!      Call alloc_DBS_galerkin
 
 ! ... radial w.f.:
 
@@ -73,8 +79,8 @@
       Do i=1,nbf
 
        ip=i+i-1; jp=ip+1
-       P=0.d0; Call Bvalue_bm(ksp,pbs(1,ip),P,pbsp)
-       Q=0.d0; Call Bvalue_bm(ksq,pbs(1,jp),Q,qbsp)
+       P=0.d0; Call Bvalue_bm(ksp,pq(1,1,i),P,pbsp)
+       Q=0.d0; Call Bvalue_bm(ksq,pq(1,2,i),Q,qbsp)
 
        k=iaf; EL='     '; EL=ebs(i)
        Do j=1,5
@@ -97,48 +103,3 @@
       END   !  program dbsr_tab
           
 
-
-
-
-!======================================================================
-      Subroutine Read_pqbs(nu)
-!======================================================================
-!
-!     read B-spline w.f. from bsw-file (unit nu) only those orbitals
-!     which labels are already in the list
-!     
-!----------------------------------------------------------------------
-
-      USE DBS_grid
-      USE DBS_gauss
-      USE DBS_orbitals_pq
-
-      Implicit none
-
-      Integer, intent(in) :: nu
-      Integer :: i,j,k,l,n,m,itype,nsw,ksw,mw,kp,kq
-      Character(5) :: elw
-      Integer, External :: Ifind_bsorb,Iadd_bsorb 
-      Real(8) :: tt(ns+ks)
-
-      rewind(nu)
-      read(nu) itype,nsw,ksw,tt,kp,kq
-      if(itype.ne.grid_type) Stop ' Read_pqbs:  another grid_type'
-      if(ksw.ne.ks) Stop ' Read_pqbs:  ksw <> ks'
-      if(nsw.ne.ns) Stop ' Read_pqbs:  nsw <> ns'
-      if(ksp.ne.kp) Stop ' Read_pqbs:  ksp <> kp'
-      if(ksq.ne.kq) Stop ' Read_pqbs:  ksq <> kq'
-      Do i=1,ns+ks
-       if(tt(i).ne.t(i)) Stop ' Read_pqbs:  t <> tt'
-      End do
-
-    1 read(nu,end=2) elw,mw
-      Call EL_NLJK(elw,n,k,l,j,i)
-      m = Ifind_bsorb(n,k,i,2) 
-      mbs(m)=mw 
-      i=m+m-1; pbs(1:ns,i)=0.d0; read(nu) pbs(1:mw,i)
-      i=m+m;   pbs(1:ns,i)=0.d0; read(nu) pbs(1:mw,i)
-      go to 1
-    2 Close(nu)
-
-      End subroutine Read_pqbs

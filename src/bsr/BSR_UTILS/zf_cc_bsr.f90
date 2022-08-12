@@ -104,10 +104,12 @@
        kk=kpol+kpol+1; if(IST(I).eq.0) kk=kpol+kpol
        if(ITRA(ILT(i),kk,ILT(j)).eq.0) Cycle
       
-       AS = 'mult3 '//AI(1:ii)//blank//AJ(1:jj)//blank//atype//' >> zf_cc_bsr.out'
+       AS = './mult4 initial='//AI(1:ii)//blank//'final='//&
+        AJ(1:jj)//blank//'AA='//atype//' >> zf_cc_bsr.out'
        Call System(AS)
 
-       AS = 'bsr_dmat3 '//AI(1:ii)//blank//AJ(1:jj)//cc//' gf='//gf//' '//  &
+       AS = './bsr_dmat4 '//AI(1:ii)//blank//AJ(1:jj)//cc//&
+        ' gf='//gf//' '//  &
                           trim(param)//' >> zf_cc_bsr.out'
        Call System(AS)
 

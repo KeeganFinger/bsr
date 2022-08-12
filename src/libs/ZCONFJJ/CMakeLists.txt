@@ -11,4 +11,4 @@ add_library(zconfjj
   read_conf_jj.f90         read_core_jj.f90         read_expn_jj.f90
   smu.f90                  test_cj.f90              gen_jj_states.f90
   coef_1conf.f90           coef_2conf_jj.f90        read_peel_orb.f90
-  check_conf_jj.f90        read_iort_jj.f90)
+  check_conf_jj.f90        )

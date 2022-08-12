@@ -54,7 +54,8 @@
 
        if(lpar(i)+lpar(j).lt.kpol) Cycle      
 
-       write(AS,'(3(a,1x),a,2i3.3)') 'mult3',trim(BJ),trim(BI),'E1 mult_bnk_',i,j
+       write(AS,'(2a,x,2a,x,a,2i3.3)') './mult4 initial=',trim(BJ),&
+        'final=',trim(BI),'E1 AF_b=mult_bnk_',i,j
        write(*,*) trim(AS)
        Call System(AS)
 
@@ -65,7 +66,7 @@
 
        write(AF,'(a,i3.3)') 'D',icount
        write(AS,'(a,a,a,a,a,a,a)')  &
-         'bsr_dmat3 ',trim(BJ),' ',trim(BI),' b d  AF_dd=',trim(AF)
+         './bsr_dmat4 ',trim(BJ),' ',trim(BI),' b d  AF_dd=',trim(AF)
        write(*,*) trim(AS)
 
        Call System(AS)
