@@ -13,14 +13,11 @@ set(BSR_CONF_COMMON_SOURCES
   read_arg.f90
   bsr_conf_inf.f90)
 
-#MESSAGE(WARNING "bsr_conf3: check_cfg.f90 does not compile with libs_04")
-
 add_executable(bsr_conf
   ${BSR_CONF_COMMON_SOURCES}
   bsr_conf.f90)
 target_link_libraries(bsr_conf zconfls zcom shells)
 
-#message(WARNING "bsr_conf3_mpi does not build correctly")
 if(MPI_Fortran_FOUND)
  add_executable(bsr_conf_mpi
    ${BSR_CONF_COMMON_SOURCES}

@@ -12,9 +12,6 @@
 !     JORT=0 - full non-orthogonality
 !     JORT>0 - partial orthogonality
 !
-!     IORT=0 - orthogonal
-!     IORT=1 - the same (overlap =1)
-!     iort=2 - non-orthogonal  
 !---------------------------------------------------------------------
       Use orb_LS
 
@@ -58,6 +55,6 @@
 
 ! ... additional orthogonality conditions 
 
-      if(nu.gt.0) Call R_orth(nu)   ! ???
+      if(nu.gt.0) Call R_orth(nu)
       
       End Subroutine Pre_iort
